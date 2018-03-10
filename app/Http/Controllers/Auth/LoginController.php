@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\UserOauth;
 
 use Illuminate\Http\Request;
 
@@ -56,11 +57,30 @@ class LoginController extends Controller
      */
     public function handleProviderCallback($provider)
     {
-        $user = \Socialite::driver($provider)->user();
-        $id = $user->getId();
-        $nickname = $user->getNickname();
-        $name = $user->getName();
-        $email = $user->getEmail();
-        $avatar = $user->getAvatar();
+        $userSocialite = \Socialite::driver($provider)->user();
+        $id = $userSocialite->getId();
+        $name = $userSocialite->getName();
+        $email = $userSocialite->getEmail();
+        $avatar = $userSocialite->getAvatar();
+        $userOauth = UserOauth::where('uuid',$userSocialite->getId())->first();
+        if ($userOauth == null){
+            $user = User::where('email',$userSocialite->getEmail())->first();
+            if ($user==null){
+                $user = new User;
+                $user->name = $userSocialite->getName();
+                $user->email = $userSocialite->getEmail();
+                $user->picture = $userSocialite->getAvatar();
+                $user->save();
+            }
+            $userOauth = new UserOauth;
+            $userOauth->uuid = $userSocialite->getId();
+            $userOauth->name = $userSocialite->getName();
+            $userOauth->email = $userSocialite->getEmail();
+            $userOauth->avatar = $userSocialite->getAvatar();
+            $userOauth->user_id = $user->id;
+            
+        } else {
+
+        }
     }
 }
