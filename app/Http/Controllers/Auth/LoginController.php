@@ -57,7 +57,10 @@ class LoginController extends Controller
     public function handleProviderCallback($provider)
     {
         $user = \Socialite::driver($provider)->user();
-
-        // $user->token;
+        $id = $user->getId();
+        $nickname = $user->getNickname();
+        $name = $user->getName();
+        $email = $user->getEmail();
+        $avatar = $user->getAvatar();
     }
 }
