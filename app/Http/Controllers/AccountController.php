@@ -162,6 +162,11 @@ class AccountController extends Controller
         return redirect('/accounts');
     }
 
+    public function confirm($id){
+        $account = \Auth::user()->accounts->where('id',$id)->first();
+        return view('accounts.confirm', ['account'=>$account]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -170,6 +175,15 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        //
+        foreach (\Auth::user()->accounts as $account){
+            if($account->prefer_debit_account_id == $id){
+                $account->prefer_debit_account_id = null;
+                $account->save();
+            }
+        }
+        $account = \Auth::user()->accounts->where('id',$id)->first();
+        $account->delete();
+        return redirect('/accounts');
+
     }
 }

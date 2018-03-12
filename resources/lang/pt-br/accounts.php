@@ -9,5 +9,7 @@ return [
     'not_your_account' => 'A conta selecionada não é sua',
     'debit_day_null' => 'Dia de vencimento não pode ficar em branco',
     'credit_close_day_null' => 'Dia de fechamento não pode ficar em branco',
-    'between_days' => 'O dia deve ficar entre 1 e 31 dias'
+    'between_days' => 'O dia deve ficar entre 1 e 31 dias',
+    'confirm_destroy'=> 'Confirmar remover conta',
+    'confirmation_text' => 'Tem certeza que deseja remover a conta :id/:description?'
 ];
