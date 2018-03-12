@@ -5,7 +5,11 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Accounts</div>
+                <div class="panel-heading">
+                  {{$action}}
+                  {{__('accounts.title')}}
+                  <a href="/accounts">{{__('common.back')}}</a>
+                </div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -13,18 +17,34 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    {{ Form::open(array('url' => '/accounts')) }}
-                      {{ Form::label('description', 'description') }}
-                      {{ Form::text('description') }}
-                      {{ Form::label('is_credit_card', 'is_credit_card') }}
-                      {{ Form::checkbox('is_credit_card') }}
-                      {{ Form::label('prefer_debit_account_id', 'debit account') }}
-                      {{ Form::select('prefer_debit_account_id', $selectAccounts) }}
-                      {{ Form::label('debit_day', 'debit date') }}
-                      {{ Form::number('debit_day') }}
-                      {{ Form::label('credit_close_day', 'credit_close day') }}
-                      {{ Form::number('credit_close_day') }}
-                      {{ Form::submit() }}
+                    {{ Form::open(['url' => '/accounts'.(isset($account)?'/'.$account->id:''), 'method'=>(isset($account)?'PUT':'POST')]) }}
+                      <div class="form-group">
+                        {{ Form::label('description', __('common.description')) }}
+                        {{ Form::text('description', old('description', (isset($account)?$account->description:null)), ['class'=>'form-control']) }}
+                      </div>
+                      <div class="form-group">
+                        {{ Form::label('is_credit_card', __('accounts.is_credit_card')) }}
+                        <div class="checkbox">
+                          <label>
+                            {{ Form::checkbox('is_credit_card', 1, old('is_credit_card', (isset($account)?$account->is_credit_card:false)), ['disabled'=>isset($account)]) }}
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        {{ Form::label('prefer_debit_account_id', __('accounts.prefer_debit_account')) }}
+                        {{ Form::select('prefer_debit_account_id', $selectAccounts, old('prefer_debit_account_id', (isset($account)?$account->prefer_debit_account_id:null)), ['class'=>'form-control']) }}
+                      </div>
+                      <div class="form-group">
+                        {{ Form::label('debit_day', __('accounts.debit_day')) }}
+                        {{ Form::number('debit_day', old('debit_day', (isset($account)?$account->debit_day:null)), ['class'=>'form-control']) }}
+                      </div>
+                      <div class="form-group">
+                        {{ Form::label('credit_close_day', __('accounts.credit_close_day')) }}
+                        {{ Form::number('credit_close_day', old('credit_close_day', (isset($account)?$account->credit_close_day:null)), ['class'=>'form-control']) }}
+                      </div>
+                      <div class="form-group">
+                        {{ Form::submit(__('common.save'),['class'=>'btn']) }}
+                      </div>
                     {{ Form::close() }} 
                 </div>
             </div>

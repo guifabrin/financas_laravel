@@ -6,5 +6,8 @@ return [
     'edit' => 'Editar',
     'add' => 'Adicionar',
     'remove' => 'Remover',
-    'actions' => 'Ações'
+    'actions' => 'Ações',
+    'none' => 'Nenhum(a)',
+    'back' => 'Voltar',
+    'save' => 'Salvar'
 ];
