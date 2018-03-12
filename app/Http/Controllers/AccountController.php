@@ -105,6 +105,7 @@ class AccountController extends Controller
             $account->debit_day = $request->debit_day;
             $account->credit_close_day = $request->credit_close_day;   
         }
+        $account->amount = 0;
         $account->save();
         return redirect('/accounts');
     }
