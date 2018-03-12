@@ -6,8 +6,8 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
         <div class="panel-heading">
-          {{__('accounts.title')}}
-          <a href="/accounts/create">{{__('common.add')}}</a>
+          {{__('transactions.title')}}
+          <a href="/transactions/{{$account->id}}/create">{{__('common.add')}}</a>
         </div>
 
         <div class="panel-body">
@@ -17,9 +17,9 @@
               </div>
           @endif
           {!! Table::generateModel(
-            [__('common.id'), __('common.description'), __('accounts.is_credit_card'), __('accounts.prefer_debit_account'), __('accounts.debit_day'), __('accounts.credit_close_day'), __('accounts.ammount')], 
-            $accounts,
-            ['id', 'description', 'is_credit_card', 'prefer_debit_account_id:preferDebitAccount:description', 'debit_day', 'credit_close_day', 'amount']) !!}
+            [__('common.id'), __('common.date'), __('common.description'), __('transactions.value'), __('transactions.paid')], 
+            $transactions,
+            ['id', 'date', 'description', 'value', 'paid']) !!}
           {{ Table::links() }}
         </div>
       </div>

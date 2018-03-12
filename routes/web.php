@@ -22,3 +22,4 @@ Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCall
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('accounts', 'AccountController');
 Route::get('/accounts/{id}/confirm', 'AccountController@confirm');
+Route::resource('transactions/{accountId}', 'TransactionController');

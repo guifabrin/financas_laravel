@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Accounts extends Model
+class Account extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -22,6 +22,11 @@ class Accounts extends Model
 
     public function preferDebitAccount()
     {
-        return $this->belongsTo('App\Accounts', 'prefer_debit_account_id');
+        return $this->belongsTo('App\Account', 'prefer_debit_account_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany('App\Transaction');
     }
 }

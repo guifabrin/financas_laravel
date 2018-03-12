@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Transaction;
+use Validator;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -12,9 +13,13 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($accountId)
     {
-        //
+        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            return view('transactions.index', ['account' => $account, 'transactions' => $account->transactions]);
+        }
     }
 
     /**
@@ -22,9 +27,28 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($accountId)
     {
-        //
+        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            return view('transactions.form', ['action'=>__('common.add'),'account' => $account]);
+        }
+    }
+
+
+    private function valid($request){
+        return Validator::make($request->all(),[
+            'description' => 'required|min:5|max:100',
+            'date' => 'required',
+            'value' => 'required'
+        ], [
+            'description.required' => __('common.description_required'),
+            'description.min' => __('common.description_min_5'),
+            'description.max' => __('common.description_max_100'),
+            'date.required' => __('common.date_required'),
+            'value.required' => __('common.date_required')
+        ])->validate();
     }
 
     /**
@@ -33,9 +57,25 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $accountId)
     {
-        //
+        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+             $this->valid($request);
+            $transaction = new Transaction;
+            $transaction->account()->associate($account);
+            $transaction->date = $request->date;
+            $transaction->description =$request->description;
+            $transaction->value = $request->value;
+            $transaction->paid = isset($request->paid)?$request->paid:false;
+            $transaction->save();
+            if($transaction->paid){
+                $account->amount += $transaction->value;
+                $account->save();
+            }
+            return redirect('/transactions/'.$account->id);
+        }
     }
 
     /**

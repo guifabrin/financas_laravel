@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Validator;
 use Illuminate\Http\Request;
-use App\Accounts;
+use App\Account;
 
 class AccountController extends Controller
 {
@@ -90,14 +90,14 @@ class AccountController extends Controller
     {
         $this->valid($request);
 
-        $account = new Accounts;
+        $account = new Account;
 
         $account->description = $request->description;
         $account->user()->associate(\Auth::user());
         
         $account->is_credit_card = $request->is_credit_card==null?false:$request->is_credit_card;
         if ($account->is_credit_card){
-            $prefer_debit_account = Accounts::find($request->prefer_debit_account_id);
+            $prefer_debit_account = Account::find($request->prefer_debit_account_id);
             if ($prefer_debit_account){
                 $account->preferDebitAccount()->associate($prefer_debit_account);
             }
