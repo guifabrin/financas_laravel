@@ -53,12 +53,14 @@ class AccountController extends Controller
     private function valid($request){
         return Validator::make($request->all(),[
             'description' => 'required|min:5|max:50',
-            'debit_day' => 'nullable|between:1,31',
-            'credit_close_day' => 'nullable|between:1,31'
+            'debit_day' => 'nullable|integer|between:1,31',
+            'credit_close_day' => 'nullable|integer|between:1,31'
         ], [
             'description.required' => __('common.description_required'),
-            'debit_day.beetween' => __('accounts.beetween_days'),
-            'credit_close_day.beetween' => __('accounts.beetween_days')
+            'description.min' => __('common.description_min_5'),
+            'description.max' => __('common.description_max_50'),
+            'debit_day.between' => __('accounts.between_days'),
+            'credit_close_day.between' => __('accounts.between_days')
         ])->after(function ($validator) use ($request){
             if ($request->is_credit_card) {
                 if ($request->prefer_debit_account_id!=null){
@@ -94,14 +96,15 @@ class AccountController extends Controller
         $account->user()->associate(\Auth::user());
         
         $account->is_credit_card = $request->is_credit_card==null?false:$request->is_credit_card;
-        $prefer_debit_account = Accounts::find($request->prefer_debit_account_id);
-        if ($prefer_debit_account){
-            $account->preferDebitAccount()->associate($prefer_debit_account);
+        if ($account->is_credit_card){
+            $prefer_debit_account = Accounts::find($request->prefer_debit_account_id);
+            if ($prefer_debit_account){
+                $account->preferDebitAccount()->associate($prefer_debit_account);
+            }
+            
+            $account->debit_day = $request->debit_day;
+            $account->credit_close_day = $request->credit_close_day;   
         }
-        
-        $account->debit_day = $request->debit_day;
-        $account->credit_close_day = $request->credit_close_day;   
-
         $account->save();
         return redirect('/accounts');
     }
@@ -145,14 +148,15 @@ class AccountController extends Controller
         $account->description = $request->description;
         $account->user()->associate(\Auth::user());
         
-        $account->is_credit_card = $request->is_credit_card==null?false:$request->is_credit_card;
-        $prefer_debit_account = \Auth::user()->accounts->where('id',$request->prefer_debit_account_id)->first();
-        if ($prefer_debit_account){
-            $account->preferDebitAccount()->associate($prefer_debit_account);
-        }
-        
-        $account->debit_day = $request->debit_day;
-        $account->credit_close_day = $request->credit_close_day;   
+        if ($account->is_credit_card){
+            $prefer_debit_account = \Auth::user()->accounts->where('id',$request->prefer_debit_account_id)->first();
+            if ($prefer_debit_account){
+                $account->preferDebitAccount()->associate($prefer_debit_account);
+            }
+            
+            $account->debit_day = $request->debit_day;
+            $account->credit_close_day = $request->credit_close_day;
+        } 
 
         $account->save();
         return redirect('/accounts');
