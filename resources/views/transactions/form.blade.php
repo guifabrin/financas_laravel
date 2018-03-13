@@ -17,7 +17,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    {{ Form::open(['url' => '/transactions/'.$account->id."/".(isset($transaction)?'/'.$transaction->id:''), 'method'=>(isset($transaction)?'PUT':'POST')]) }}
+                    {{ Form::open(['url' => '/account/'.$account->id.(isset($transaction)?'/transaction/'.$transaction->id:''), 'method'=>(isset($transaction)?'PUT':'POST')]) }}
                       <div class="form-group">
                         {{ Form::label('date', __('common.date')) }}
                         {{ Form::date('date', old('date', (isset($transaction)?$transaction->date:null)), ['class'=>'form-control']) }}
@@ -27,7 +27,7 @@
                         {{ Form::text('description', old('description', (isset($transaction)?$transaction->description:null)), ['class'=>'form-control']) }}
                       </div>
                       <div class="form-group">
-                        {{ Form::label('value', __('common.value')) }}
+                        {{ Form::label('value', __('transactions.value')) }}
                         {{ Form::number('value', old('value', (isset($transaction)?$transaction->value:null)), ['class'=>'form-control', 'step' => '0.01']) }}
                       </div>
                       <div class="form-group">

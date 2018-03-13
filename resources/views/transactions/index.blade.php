@@ -8,6 +8,7 @@
         <div class="panel-heading">
           {{__('transactions.title')}}
           <a href="/transactions/{{$account->id}}/create">{{__('common.add')}}</a>
+          {{$account->amount}}
         </div>
 
         <div class="panel-body">
@@ -48,8 +49,8 @@
                     </div>
                   </td>
                   <td>
-                    <a href="/transactions/{{$transaction->id}}/edit">{{__('common.edit')}}</a>
-                    <a href="/transactions/{{$transaction->id}}/confirm">{{__('common.remove')}}</a>
+                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit">{{__('common.edit')}}</a>
+                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm">{{__('common.remove')}}</a>
                   </td>
                 </tr>
               @endforeach

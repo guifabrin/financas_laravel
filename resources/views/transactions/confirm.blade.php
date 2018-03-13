@@ -6,13 +6,13 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
         <div class="panel-heading">
-          {{__('accounts.confirm_destroy')}}
+          {{__('transactions.confirm_destroy')}}
           <a href="/accounts">{{__('common.back')}}</a>
         </div>
 
         <div class="panel-body">
-         {{ Form::open(['url' => '/accounts/'.$account->id, 'method'=>'DELETE']) }}
-            {{__('accounts.confirmation_text', ['id'=>$account->id, 'description'=>$account->description])}}
+         {{ Form::open(['url' => '/account/'.$account->id.'/transaction/'.$transaction->id, 'method'=>'DELETE']) }}
+            {{__('transactions.confirmation_text', ['id'=>$transaction->id, 'description'=>$transaction->description, 'accountId'=>$account->id, 'accountDescription'=>$account->description])}}
             <div class="form-group">
               <a href="/accounts">{{__('common.back')}}</a>
               {{ Form::submit(__('common.save'),['class'=>'btn']) }}

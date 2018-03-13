@@ -8,6 +8,22 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+    private function verifyTransaction($account, $transactionId){
+        if (!$transactionId || !($transaction = $account->transactions->where('id', $transactionId)->first())){
+            return false;
+        } else {
+            return $transaction;
+        }
+    }
+
+    private function verifyAccount($accountId){
+        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+            return false;
+        } else {
+            return $account;
+        }
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +31,8 @@ class TransactionController extends Controller
      */
     public function index($accountId)
     {
-        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
             return view('transactions.index', ['account' => $account, 'transactions' => $account->transactions]);
@@ -29,7 +46,8 @@ class TransactionController extends Controller
      */
     public function create($accountId)
     {
-        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
             return view('transactions.form', ['action'=>__('common.add'),'account' => $account]);
@@ -59,10 +77,11 @@ class TransactionController extends Controller
      */
     public function store(Request $request, $accountId)
     {
-        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
-             $this->valid($request);
+            $this->valid($request);
             $transaction = new Transaction;
             $transaction->account()->associate($account);
             $transaction->date = $request->date;
@@ -95,9 +114,19 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($accountId, $transactionId)
     {
-        //
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            $transaction = $this->verifyTransaction($account, $transactionId);
+            if (!$transaction){
+                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
+            } else {
+                return view('transactions.form', ['action'=>__('common.edit'),'account' => $account, 'transaction' => $transaction]);
+            }
+        }
     }
 
     /**
@@ -107,9 +136,47 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, $accountId, $transactionId)
+    {   
+        $this->valid($request);
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            $transaction = $this->verifyTransaction($account, $transactionId);
+            if (!$transaction){
+                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
+            } else {
+                $paid = isset($request->paid)?$request->paid:false;
+                if ($transaction->paid){
+                    $account->amount -= $transaction->value;
+                }
+                if ($paid){
+                    $account->amount += $transaction->value;
+                }
+                $transaction->date = $request->date;
+                $transaction->description =$request->description;
+                $transaction->value = $request->value;
+                $transaction->paid = $paid;
+                $transaction->save();
+                $account->save();
+                return redirect('/account/'.$account->id.'/transactions');
+            }
+        }
+    }
+
+    public function confirm($accountId, $transactionId){
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            $transaction = $this->verifyTransaction($account, $transactionId);
+            if (!$transaction){
+                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
+            } else {
+                return view('transactions.confirm', ['account' => $account, 'transaction' => $transaction]);
+            }
+        }
     }
 
     /**
@@ -118,8 +185,23 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($accountId,$transactionId)
     {
-        //
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            $transaction = $this->verifyTransaction($account, $transactionId);
+            if (!$transaction){
+                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
+            } else {
+                if ($transaction->paid){
+                    $account->amount -= $transaction->value;
+                }
+                $transaction->delete();
+                $account->save();
+                return redirect('/account/'.$account->id.'/transactions');
+            }
+        }
     }
 }
