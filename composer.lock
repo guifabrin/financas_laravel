@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ab0e03f84be6384aa1cb1e2a909c304",
+    "content-hash": "93eca276b62094ba034e634185f80733",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1410,57 +1410,6 @@
             "time": "2016-08-17T00:36:58+00:00"
         },
         {
-            "name": "lloricode/laravel-html-table",
-            "version": "1.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lloricode/laravel-html-table.git",
-                "reference": "1f4ffa536a61a6a5db4da937911f89dbc4355600"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lloricode/laravel-html-table/zipball/1f4ffa536a61a6a5db4da937911f89dbc4355600",
-                "reference": "1f4ffa536a61a6a5db4da937911f89dbc4355600",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "mmoreram/php-formatter": "dev-master",
-                "orchestra/testbench": "~3.3.0|~3.4.2|^3.5.0",
-                "phpunit/phpunit": "^5.7|6.2|^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Lloricode\\LaravelHtmlTable\\Providers\\LaravelHtmlTableProvider"
-                    ],
-                    "aliases": {
-                        "Table": "Lloricode\\LaravelHtmlTable\\Facades\\LaravelHtmlTableFacade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Lloricode\\LaravelHtmlTable\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lloric Mayuga Garcia",
-                    "email": "lloricode@gmail.com"
-                }
-            ],
-            "description": "Html table generator for laravel",
-            "time": "2018-02-28T04:37:39+00:00"
-        },
-        {
             "name": "monolog/monolog",
             "version": "1.23.0",
             "source": {
@@ -1584,16 +1533,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.24.1",
+            "version": "1.24.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "ef12cbd8ba5ce624f0a6a95e0850c4cc13e71e41"
+                "reference": "bba6c6e410c6b4317e37a9474aeaa753808c3875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/ef12cbd8ba5ce624f0a6a95e0850c4cc13e71e41",
-                "reference": "ef12cbd8ba5ce624f0a6a95e0850c4cc13e71e41",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/bba6c6e410c6b4317e37a9474aeaa753808c3875",
+                "reference": "bba6c6e410c6b4317e37a9474aeaa753808c3875",
                 "shasum": ""
             },
             "require": {
@@ -1633,7 +1582,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-03-09T15:49:34+00:00"
+            "time": "2018-03-10T10:10:14+00:00"
         },
         {
             "name": "nikic/php-parser",
