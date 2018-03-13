@@ -22,4 +22,9 @@ Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCall
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('accounts', 'AccountController');
 Route::get('/accounts/{id}/confirm', 'AccountController@confirm');
-Route::resource('transactions/{accountId}', 'TransactionController');
+Route::get('account/{accountId}/transactions', 'TransactionController@index');
+Route::get('account/{accountId}/transaction/create', 'TransactionController@create');
+Route::get('account/{accountId}/transaction/{transactionId}/edit', 'TransactionController@edit');
+Route::post('account/{accountId}/transaction', 'TransactionController@store');
+Route::patch('account/{accountId}/transaction/{transactionId}', 'TransactionController@update');
+Route::delete('account/{accountId}/transaction/{transactionId}', 'TransactionController@destroy');

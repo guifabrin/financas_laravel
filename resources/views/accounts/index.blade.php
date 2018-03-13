@@ -16,11 +16,56 @@
                   {{ session('status') }}
               </div>
           @endif
-          {!! Table::generateModel(
-            [__('common.id'), __('common.description'), __('accounts.is_credit_card'), __('accounts.prefer_debit_account'), __('accounts.debit_day'), __('accounts.credit_close_day'), __('accounts.ammount')], 
-            $accounts,
-            ['id', 'description', 'is_credit_card', 'prefer_debit_account_id:preferDebitAccount:description', 'debit_day', 'credit_close_day', 'amount']) !!}
-          {{ Table::links() }}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{__('common.id')}}</th>
+                <th>{{__('common.description')}}</th>
+                <th>{{__('accounts.is_credit_card')}}</th>
+                <th>{{__('accounts.prefer_debit_account')}}</th>
+                <th>{{__('accounts.debit_day')}}</th>
+                <th>{{__('accounts.credit_close_day')}}</th>
+                <th>{{__('accounts.amount')}}</th>
+                <th>{{__('common.actions')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($accounts as $account)
+                <tr>
+                  <td>
+                    {{$account->id}}
+                  </td>
+                  <td>
+                    {{$account->description}}
+                  </td>
+                  <td>
+                    <div class="checkbox">
+                      <label><input disabled="true" type="checkbox" {{$account->is_credit_card?"selected='true'":""}}></label>
+                    </div>
+                  </td>
+                  <td>
+                    @if ($account->prefer_debit_account_id!=null)
+                      {{$account->preferDebitAccount()->description}}
+                    @endif
+                  </td>
+                  <td>
+                    {{$account->debit_day}}
+                  </td>
+                  <td>
+                    {{$account->credit_close_day}}
+                  </td>
+                  <td>
+                    {{$account->amount}}
+                  </td>
+                  <td>
+                    <a href="/accounts/{{$account->id}}/edit">{{__('common.edit')}}</a>
+                    <a href="/accounts/{{$account->id}}/confirm">{{__('common.remove')}}</a>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+          {{$accounts->links()}}
         </div>
       </div>
     </div>

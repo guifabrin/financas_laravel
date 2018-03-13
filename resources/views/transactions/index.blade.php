@@ -16,11 +16,45 @@
                   {{ session('status') }}
               </div>
           @endif
-          {!! Table::generateModel(
-            [__('common.id'), __('common.date'), __('common.description'), __('transactions.value'), __('transactions.paid')], 
-            $transactions,
-            ['id', 'date', 'description', 'value', 'paid']) !!}
-          {{ Table::links() }}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{__('common.id')}}</th>
+                <th>{{__('common.date')}}</th>
+                <th>{{__('common.description')}}</th>
+                <th>{{__('transactions.value')}}</th>
+                <th>{{__('transactions.paid')}}</th>
+                <th>{{__('common.actions')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($transactions as $transaction)
+                <tr>
+                  <td>
+                    {{$transaction->id}}
+                  </td>
+                  <td>
+                    {{$transaction->date}}
+                  </td>
+                  <td>
+                    {{$transaction->description}}
+                  </td>
+                  <td>
+                    {{$transaction->value}}
+                  </td>
+                  <td>
+                    <div class="checkbox">
+                      <label><input disabled="true" type="checkbox" {{$transaction->paid?"selected='true'":""}}></label>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="/transactions/{{$transaction->id}}/edit">{{__('common.edit')}}</a>
+                    <a href="/transactions/{{$transaction->id}}/confirm">{{__('common.remove')}}</a>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

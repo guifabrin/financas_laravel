@@ -25,7 +25,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        $accounts = \Auth::user()->accounts;
+        $accounts = \Auth::user()->accounts()->paginate(10);
         return view('accounts.index', ['accounts' => $accounts]);
     }
 
