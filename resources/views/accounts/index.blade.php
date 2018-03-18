@@ -40,12 +40,12 @@
                   </td>
                   <td>
                     <div class="checkbox">
-                      <label><input disabled="true" type="checkbox" {{$account->is_credit_card?"selected='true'":""}}></label>
+                      <label><input disabled="true" type="checkbox" {{$account->is_credit_card?"checked='true'":""}}></label>
                     </div>
                   </td>
                   <td>
                     @if ($account->prefer_debit_account_id!=null)
-                      {{$account->preferDebitAccount()->description}}
+                      {{$account->preferDebitAccount->description}}
                     @endif
                   </td>
                   <td>

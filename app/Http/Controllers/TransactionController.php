@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     private function verifyTransaction($account, $transactionId){
         if (!$transactionId || !($transaction = $account->transactions->where('id', $transactionId)->first())){
             return false;
@@ -35,7 +45,7 @@ class TransactionController extends Controller
         if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
-            return view('transactions.index', ['account' => $account, 'transactions' => $account->transactions]);
+            return view('transactions.index', ['account' => $account, 'transactions' => $account->transactions()->orderBy('date')->orderBy('description')->get()]);
         }
     }
 
@@ -93,7 +103,7 @@ class TransactionController extends Controller
                 $account->amount += $transaction->value;
                 $account->save();
             }
-            return redirect('/transactions/'.$account->id);
+            return redirect('/account/'.$account->id.'/transactions/');
         }
     }
 

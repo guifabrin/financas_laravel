@@ -7,7 +7,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           {{__('transactions.title')}}
-          <a href="/transactions/{{$account->id}}/create">{{__('common.add')}}</a>
+          <a href="/account/{{$account->id}}/transaction/create">{{__('common.add')}}</a>
           {{$account->amount}}
         </div>
 
@@ -45,7 +45,7 @@
                   </td>
                   <td>
                     <div class="checkbox">
-                      <label><input disabled="true" type="checkbox" {{$transaction->paid?"selected='true'":""}}></label>
+                      <label><input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}></label>
                     </div>
                   </td>
                   <td>
