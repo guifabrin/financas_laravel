@@ -26,6 +26,7 @@
                 <th>{{__('accounts.debit_day')}}</th>
                 <th>{{__('accounts.credit_close_day')}}</th>
                 <th>{{__('accounts.amount')}}</th>
+                <th>{{__('accounts.amount')}}</th>
                 <th>{{__('common.actions')}}</th>
               </tr>
             </thead>
@@ -56,6 +57,9 @@
                   </td>
                   <td>
                     {{$account->amount}}
+                  </td>
+                  <td>
+                    {{$account->amount+$account->transactions()->where('paid', false)->sum('value')}}
                   </td>
                   <td>
                     <a href="/accounts/{{$account->id}}/edit">{{__('common.edit')}}</a>
