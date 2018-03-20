@@ -46,10 +46,10 @@ class TransactionController extends Controller
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
             $transactions =  $account->transactions()->orderBy('date')->orderBy('description');
-            if ($request->input('date_init') && $request->input('date_end')){
-                $transactions->where('date','>=',$request->input('date_init'))->where('date','<=',$request->input('date_init'));
+            if ($request->input('date_init')!==null && $request->input('date_end')!==null){
+                $transactions->whereBetween('date',[$request->input('date_init'), $request->input('date_end')]);
             } else {
-                $transactions->where('date','>=',date('01-m-Y'))->where('date','<=',date('t-m-Y'));
+                $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
             }
             $transactions = $transactions->get();
             return view('transactions.index', ['account' => $account, 'transactions' => $transactions]);

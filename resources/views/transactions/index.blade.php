@@ -60,7 +60,9 @@
                   </td>
                   <td>
                     <div class="checkbox">
-                      <label><input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}></label>
+                      <label>
+                        <input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
+                      </label>
                     </div>
                   </td>
                   <td>
