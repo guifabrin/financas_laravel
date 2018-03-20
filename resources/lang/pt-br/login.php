@@ -10,5 +10,6 @@
     'password_confirmation' => 'Confirmar senha',
     'register' => 'Registrar',
     'reset_password' => 'Recuperar senha',
-    'send_email_reset' => 'Enviar email'
-  ];
+    'send_email_reset' => 'Enviar email',
+    'logout' => 'Sair'
+  ];  

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
@@ -17,6 +17,21 @@
                   {{ session('status') }}
               </div>
           @endif
+          
+          {{ Form::open(['url' => '/account/'.$account->id.'/transactions/', 'method'=>'GET', 'class'=>'form-inline']) }}
+            <div class="form-group">
+              {{ Form::label('date_init', __('common.date_init')) }}
+              {{ Form::date('date_init', old('date_init', date('Y-m-01')), ['class'=>'form-control']) }}
+            </div>
+            <div class="form-group">
+              {{ Form::label('date_end', __('common.date_end')) }}
+              {{ Form::date('date_end', old('date_end', date('Y-m-t')), ['class'=>'form-control']) }}
+            </div>
+            <div class="form-group">
+              {{ Form::submit(__('common.search'),['class'=>'btn']) }}
+            </div>
+          {{ Form::close() }}
+          
           <table class="table">
             <thead>
               <tr>
@@ -35,13 +50,13 @@
                     {{$transaction->id}}
                   </td>
                   <td>
-                    {{$transaction->date}}
+                    {{date_format(date_create_from_format('Y-m-d', $transaction->date), __('common.date_format'))}}
                   </td>
                   <td>
                     {{$transaction->description}}
                   </td>
                   <td>
-                    {{$transaction->value}}
+                    {{number_format($transaction->value, 2)}}
                   </td>
                   <td>
                     <div class="checkbox">

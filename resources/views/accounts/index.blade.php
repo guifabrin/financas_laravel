@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
@@ -56,14 +56,15 @@
                     {{$account->credit_close_day}}
                   </td>
                   <td>
-                    {{$account->amount}}
+                    {{number_format($account->amount, 2)}}
                   </td>
                   <td>
-                    {{$account->amount+$account->transactions()->where('paid', false)->sum('value')}}
+                    {{number_format($account->amount+$account->transactions()->where('paid', false)->where('date','<',date('Y-m-t'))->sum('value'), 2)}}
                   </td>
                   <td>
                     <a href="/accounts/{{$account->id}}/edit">{{__('common.edit')}}</a>
                     <a href="/accounts/{{$account->id}}/confirm">{{__('common.remove')}}</a>
+                    <a href="/account/{{$account->id}}/transactions">{{__('transactions.title')}}</a>
                   </td>
                 </tr>
               @endforeach

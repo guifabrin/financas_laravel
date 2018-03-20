@@ -39,13 +39,20 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($accountId)
+    public function index(Request $request, $accountId)
     {
         $account = $this->verifyAccount($accountId);
         if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
-            return view('transactions.index', ['account' => $account, 'transactions' => $account->transactions()->orderBy('date')->orderBy('description')->get()]);
+            $transactions =  $account->transactions()->orderBy('date')->orderBy('description');
+            if ($request->input('date_init') && $request->input('date_end')){
+                $transactions->where('date','>=',$request->input('date_init'))->where('date','<=',$request->input('date_init'));
+            } else {
+                $transactions->where('date','>=',date('01-m-Y'))->where('date','<=',date('t-m-Y'));
+            }
+            $transactions = $transactions->get();
+            return view('transactions.index', ['account' => $account, 'transactions' => $transactions]);
         }
     }
 
@@ -157,12 +164,12 @@ class TransactionController extends Controller
             if (!$transaction){
                 return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
             } else {
-                $paid = isset($request->paid)?$request->paid:false;
                 if ($transaction->paid){
                     $account->amount -= $transaction->value;
                 }
+                $paid = isset($request->paid)?$request->paid:false;
                 if ($paid){
-                    $account->amount += $transaction->value;
+                    $account->amount += $request->value;
                 }
                 $transaction->date = $request->date;
                 $transaction->description =$request->description;
