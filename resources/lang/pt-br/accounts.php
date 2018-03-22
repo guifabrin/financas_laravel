@@ -12,5 +12,7 @@ return [
     'between_days' => 'O dia deve ficar entre 1 e 31 dias',
     'confirm_destroy'=> 'Confirmar remover conta',
     'confirmation_text' => 'Tem certeza que deseja remover a conta :id/:description?',
-    'amount' => 'Saldo'
+    'amount' => 'Saldo',
+    'end_month_amount' => 'Saldo fim do mês',
+    'totals' => 'Totais:'
 ];

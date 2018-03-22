@@ -29,4 +29,9 @@ class Account extends Model
     {
         return $this->hasMany('App\Transaction');
     }
+
+    public function creditCards()
+    {
+        return Account::where('prefer_debit_account_id',$this->id)->get();
+    }
 }
