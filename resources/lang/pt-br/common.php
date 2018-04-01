@@ -16,7 +16,6 @@ return [
     'actions' => 'Ações',
     'date' => 'Data',
     'in' => 'em',
-    'date_format' => 'd/m/Y',
     'date_init' => 'Data Inicial',
     'date_end' => 'Data Fim',
     'search' => 'Pesquisar'

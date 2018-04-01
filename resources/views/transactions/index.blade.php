@@ -8,7 +8,7 @@
         <div class="panel-heading">
           {{__('transactions.title')}}
           <a href="/account/{{$account->id}}/transaction/create">{{__('common.add')}}</a>
-          {{$account->amount}}
+          {!!format_money($account->amount)!!}
         </div>
 
         <div class="panel-body">
@@ -50,13 +50,13 @@
                     {{$transaction->id}}
                   </td>
                   <td>
-                    {{date_format(date_create_from_format('Y-m-d', $transaction->date), __('common.date_format'))}}
+                    {{format_date($transaction->date)}}
                   </td>
                   <td>
                     {{$transaction->description}}
                   </td>
                   <td>
-                    {{number_format($transaction->value, 2)}}
+                    {!!format_money($transaction->value)!!}
                   </td>
                   <td>
                     <div class="checkbox">

@@ -25,7 +25,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        $accounts = \Auth::user()->accounts()->paginate(10);
+        $accounts = \Auth::user()->accounts()->where('is_credit_card',false)->paginate(10);
         return view('accounts.index', ['accounts' => $accounts]);
     }
 

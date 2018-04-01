@@ -21,10 +21,6 @@
               <tr>
                 <th>{{__('common.id')}}</th>
                 <th>{{__('common.description')}}</th>
-                <th>{{__('accounts.is_credit_card')}}</th>
-                <th>{{__('accounts.prefer_debit_account')}}</th>
-                <th>{{__('accounts.debit_day')}}</th>
-                <th>{{__('accounts.credit_close_day')}}</th>
                 <th>{{__('accounts.amount')}}</th>
                 <th>{{__('accounts.end_month_amount')}}</th>
                 <th>{{__('common.actions')}}</th>
@@ -43,34 +39,18 @@
                   <td>
                     {{$account->description}}
                   </td>
-                  <td>
-                    <div class="checkbox">
-                      <label><input disabled="true" type="checkbox" {{$account->is_credit_card?"checked='true'":""}}></label>
-                    </div>
-                  </td>
-                  <td>
-                    @if ($account->prefer_debit_account_id!=null)
-                      {{$account->preferDebitAccount->description}}
-                    @endif
-                  </td>
-                  <td>
-                    {{$account->debit_day}}
-                  </td>
-                  <td>
-                    {{$account->credit_close_day}}
-                  </td>
                   <td class="text-right">
                     <?php
                       $month_sum += $account->amount;
                     ?>
-                    {{number_format($account->amount, 2)}}
+                    {!!format_money($account->amount)!!}
                   </td>
                   <td class="text-right">
                     <?php
                       $end_month = $account->amount+$account->transactions()->where('paid', false)->where('date','<',date('Y-m-t'))->sum('value');
                       $end_month_sum += $end_month;
                     ?>
-                    {{number_format($end_month, 2)}}
+                    {!!format_money($end_month)!!}
                   </td>
                   <td>
                     <a href="/accounts/{{$account->id}}/edit">{{__('common.edit')}}</a>
@@ -78,15 +58,40 @@
                     <a href="/account/{{$account->id}}/transactions">{{__('transactions.title')}}</a>
                   </td>
                 </tr>
+                <?php 
+                  foreach($account->creditCards() as $creditCard){
+                    ?>
+                      <tr>
+                        <td style="border-top:none;">
+                          {{$creditCard->id}}
+                        </td>
+                        <td style="border-top:none;">
+                          {{$creditCard->description}}
+                        </td>
+                        <td style="border-top:none;">
+                        </td>
+                        <td style="border-top:none;" class="text-right">
+                          {!!format_money($creditCard->amount)!!}
+                        </td>
+                        <td style="border-top:none;">
+                          <a href="/accounts/{{$creditCard->id}}/edit">{{__('common.edit')}}</a>
+                          <a href="/accounts/{{$creditCard->id}}/confirm">{{__('common.remove')}}</a>
+                          <a href="/account/{{$creditCard->id}}/transactions">{{__('transactions.title')}}</a>
+                        </td>
+                      </tr>
+                    <?php
+                      $end_month_sum += $creditCard->amount;
+                  }
+                ?>
               @endforeach
             </tbody>
             <tfoot>
               <tr>
-                <th colspan="6" class="text-right">
+                <th colspan="2" class="text-right">
                   {{__('accounts.totals')}}
                 </th>
-                <th class="text-right">{{number_format($month_sum,2)}}</th>
-                <th class="text-right">{{number_format($end_month_sum,2)}}</th>
+                <th class="text-right">{!!format_money($month_sum)!!}</th>
+                <th class="text-right">{!!format_money($end_month_sum)!!}</th>
                 <th></th>
               </tr>
             </tfoot>
