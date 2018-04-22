@@ -37,6 +37,7 @@
               <tr>
                 <th>{{__('common.id')}}</th>
                 <th>{{__('common.date')}}</th>
+                <th>{{__('invoice.description')}}</th>
                 <th>{{__('common.description')}}</th>
                 <th>{{__('transactions.value')}}</th>
                 <th>{{__('transactions.paid')}}</th>
@@ -53,6 +54,9 @@
                     {{format_date($transaction->date)}}
                   </td>
                   <td>
+                    {{$transaction->invoice != null ? $transaction->invoice->description : '' }}
+                  </td>
+                  <td>
                     {{$transaction->description}}
                   </td>
                   <td>
@@ -66,8 +70,8 @@
                     </div>
                   </td>
                   <td>
-                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit">{{__('common.edit')}}</a>
-                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm">{{__('common.remove')}}</a>
+                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">{{__('common.edit')}}</a>
+                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm{{isset($_GET['date_init']) && isset($_GET['date_end']) ?'?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">{{__('common.remove')}}</a>
                   </td>
                 </tr>
               @endforeach

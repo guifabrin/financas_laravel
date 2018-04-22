@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Transaction;
+use App\Invoice;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -72,7 +73,7 @@ class TransactionController extends Controller
     }
 
 
-    private function valid($request){
+    private function valid($request, $account){
         return Validator::make($request->all(),[
             'description' => 'required|min:5|max:100',
             'date' => 'required',
@@ -83,7 +84,16 @@ class TransactionController extends Controller
             'description.max' => __('common.description_max_100'),
             'date.required' => __('common.date_required'),
             'value.required' => __('common.date_required')
-        ])->validate();
+        ])->after(function ($validator) use ($request, $account){
+            if ($account->is_credit_card) {
+                if ($request->invoice_id==null){
+                    $validator->errors()->add('invoice_id', __('transactions.need_set_invoice'));
+                }
+                if ($request->invoice_id==-1 && ($request->invoice_description==null || strlen($request->invoice_description)<5)){
+                    $validator->errors()->add('invoice_id', __('transactions.invoice_description_min_5'));    
+                }
+            }
+        })->validate();
     }
 
     /**
@@ -98,19 +108,30 @@ class TransactionController extends Controller
         if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
-            $this->valid($request);
+            $this->valid($request, $account);
+            $invoice_id = null;
+            if ($request->invoice_id==-1){
+                $invoice = new Invoice;
+                $invoice->account()->associate($account);
+                $invoice->description = $request->invoice_description;
+                $invoice->save();
+                $invoice_id = $invoice->id;
+            } else if ($request->invoice_id!=null){
+                $invoice_id = $request->invoice_id;    
+            }
             $transaction = new Transaction;
             $transaction->account()->associate($account);
             $transaction->date = $request->date;
             $transaction->description =$request->description;
             $transaction->value = $request->value;
             $transaction->paid = isset($request->paid)?$request->paid:false;
+            $transaction->invoice_id = $invoice_id;
             $transaction->save();
             if($transaction->paid){
                 $account->amount += $transaction->value;
                 $account->save();
             }
-            return redirect('/account/'.$account->id.'/transactions/');
+            return redirect('/account/'.$account->id.'/transactions/'.(isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '');
         }
     }
 
@@ -154,15 +175,15 @@ class TransactionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $accountId, $transactionId)
-    {   
-        $this->valid($request);
+    {   $date_query = (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '';
         $account = $this->verifyAccount($accountId);
         if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
+            $this->valid($request, $account);
             $transaction = $this->verifyTransaction($account, $transactionId);
             if (!$transaction){
-                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
+                return redirect('/account/'.$account->id.'/transactions'.$date_query)->withErrors([__('transactions.not_your_transaction')]);
             } else {
                 if ($transaction->paid){
                     $account->amount -= $transaction->value;
@@ -171,13 +192,24 @@ class TransactionController extends Controller
                 if ($paid){
                     $account->amount += $request->value;
                 }
+                $invoice_id = null;
+                if ($request->invoice_id==-1){
+                    $invoice = new Invoice;
+                    $invoice->description = $request->invoice_description;
+                    $invoice->account()->associate($account);
+                    $invoice->save();
+                    $invoice_id = $invoice->id;
+                } else if ($request->invoice_id!=null){
+                    $invoice_id = $request->invoice_id;    
+                }
                 $transaction->date = $request->date;
                 $transaction->description =$request->description;
                 $transaction->value = $request->value;
                 $transaction->paid = $paid;
+                $transaction->invoice_id = $invoice_id;
                 $transaction->save();
                 $account->save();
-                return redirect('/account/'.$account->id.'/transactions');
+                return redirect('/account/'.$account->id.'/transactions'.$date_query);
             }
         }
     }
@@ -219,6 +251,16 @@ class TransactionController extends Controller
                 $account->save();
                 return redirect('/account/'.$account->id.'/transactions');
             }
+        }
+    }
+
+    public function invoices($accountId){
+
+        $account = $this->verifyAccount($accountId);
+        if (!$account){
+            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        } else {
+            return view('transactions.invoices', ['account' => $account]);
         }
     }
 }

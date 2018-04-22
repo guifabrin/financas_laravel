@@ -34,4 +34,17 @@ class Account extends Model
     {
         return Account::where('prefer_debit_account_id',$this->id)->get();
     }
+
+    public function invoices()
+    {
+        return $this->hasMany('App\Invoice');
+    }
+
+    public function getOptionsInvoices(){
+        $selectInvoices = [-1 =>__('common.create_new')];
+        foreach($this->invoices()->get() as $invoice){
+            $selectInvoices[$invoice->id] = $invoice->id."/".$invoice->description;
+        }
+        return $selectInvoices;
+    }
 }
