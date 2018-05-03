@@ -23,10 +23,11 @@ class AccountController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $accounts = \Auth::user()->accounts()->where('is_credit_card',false)->paginate(10);
-        return view('accounts.index', ['accounts' => $accounts]);
+        $year = isset($request->year)?$request->year:date('Y');
+        return view('accounts.index', ['accounts' => $accounts, 'year'=>$year]);
     }
 
     private function getOptionsPreferDebitAccount(){

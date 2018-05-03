@@ -27,7 +27,7 @@
                 {{ Form::label('invoice_id', __('transactions.invoice')) }}
                 {{ Form::select('invoice_id', $account->getOptionsInvoices(), old('invoice_id', isset($transaction) ? $transaction->invoice_id : null), ['class'=>'form-control', 'onchange'=>'showHideInvoiceDescription(this.value);']) }}
               </div>
-              <div id="invoice_description" class="form-group" style="{{ $transaction->invoice_id==-1 || $transaction->invoice_id==null ? '' : 'display: none' }};">
+              <div id="invoice_description" class="form-group" style="{{ isset($transaction) && ($transaction->invoice_id==-1 || $transaction->invoice_id==null) ? '' : 'display: none' }};">
                 {{ Form::label('invoice_description', __('transactions.invoice_description')) }}
                 {{ Form::text('invoice_description', old('invoice_description', null), ['class'=>'form-control']) }}
               </div>

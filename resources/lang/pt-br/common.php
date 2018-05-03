@@ -18,5 +18,6 @@ return [
     'in' => 'em',
     'date_init' => 'Data Inicial',
     'date_end' => 'Data Fim',
-    'search' => 'Pesquisar'
+    'search' => 'Pesquisar',
+    'months'=> ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 ];

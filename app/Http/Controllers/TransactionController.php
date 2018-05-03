@@ -131,7 +131,10 @@ class TransactionController extends Controller
                 $account->amount += $transaction->value;
                 $account->save();
             }
-            return redirect('/account/'.$account->id.'/transactions/'.(isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '');
+            return redirect('/account/'.$account->id.'/transactions/'.
+                (
+                    (isset($_GET) && isset($_GET['date_init']) && isset($_GET['date_end']))
+                    ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : ''));    
         }
     }
 
