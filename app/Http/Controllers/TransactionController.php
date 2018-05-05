@@ -145,10 +145,6 @@ class TransactionController extends Controller
             $transaction->paid = isset($request->paid)?$request->paid:false;
             $transaction->invoice_id = $invoice_id;
             $transaction->save();
-            if($transaction->paid){
-                $account->amount += $transaction->value;
-                $account->save();
-            }
             return redirect('/account/'.$account->id.'/transactions/'.
                 (
                     (isset($_GET) && isset($_GET['date_init']) && isset($_GET['date_end']))
@@ -206,13 +202,7 @@ class TransactionController extends Controller
             if (!$transaction){
                 return redirect('/account/'.$account->id.'/transactions'.$date_query)->withErrors([__('transactions.not_your_transaction')]);
             } else {
-                if ($transaction->paid){
-                    $account->amount -= $transaction->value;
-                }
                 $paid = isset($request->paid)?$request->paid:false;
-                if ($paid){
-                    $account->amount += $request->value;
-                }
                if ($request->invoice_id==-1){
                     $invoice = new Invoice;
                     $invoice->account()->associate($account);
@@ -267,9 +257,6 @@ class TransactionController extends Controller
             if (!$transaction){
                 return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
             } else {
-                if ($transaction->paid){
-                    $account->amount -= $transaction->value;
-                }
                 $transaction->delete();
                 $account->save();
                 return redirect('/account/'.$account->id.'/transactions');

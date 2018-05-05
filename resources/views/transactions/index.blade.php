@@ -8,7 +8,6 @@
         <div class="panel-heading">
           {{__('transactions.title')}}
           <a href="/account/{{$account->id}}/transaction/create">{{__('common.add')}}</a>
-          {!!format_money($account->amount)!!}
         </div>
 
         <div class="panel-body">

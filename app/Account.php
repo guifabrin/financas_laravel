@@ -12,7 +12,7 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'description', 'is_credit_card', 'prefer_debit_account_id', 'credit_close_day', 'debit_day'
+        'description', 'is_credit_card', 'prefer_debit_account_id'
     ];
 
     public function user()
@@ -41,7 +41,7 @@ class Account extends Model
     }
 
     public function getOptionsInvoices(){
-        $selectInvoices = [-1 =>__('common.create_new')];
+        $selectInvoices = [-1 =>__('common.create')];
         foreach($this->invoices()->get() as $invoice){
             $selectInvoices[$invoice->id] = $invoice->id."/".$invoice->description;
         }

@@ -12914,3 +12914,7 @@ fieldset[disabled] .btn-yahoo.focus {
   background-color: #fff;
 }
 
+td {
+  padding: 2px !important;
+}
+

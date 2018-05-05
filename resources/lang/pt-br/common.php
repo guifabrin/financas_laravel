@@ -18,6 +18,8 @@ return [
     'in' => 'em',
     'date_init' => 'Data Inicial',
     'date_end' => 'Data Fim',
+    'debit_date' => 'Data de Débito',
     'search' => 'Pesquisar',
-    'months'=> ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+    'months'=> ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+    'create' => 'Criar'
 ];

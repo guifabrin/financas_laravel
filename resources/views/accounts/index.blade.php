@@ -16,16 +16,35 @@
                   {{ session('status') }}
               </div>
           @endif
+          <ul class="nav nav-tabs">
+            <?php
+              $yearDiff = (date('Y')-$year);
+              $j = 10-$yearDiff;
+              if ($j<=0){
+                $j=1;
+              }
+            ?>
+            @for ($i=$year-$j; $i<=$year; $i++)
+              <li {!!$i==$year?'class="active"':''!!}>
+                <a href="/accounts?year={{$i}}">{{$i}}</a>
+              </li>
+            @endfor
+            @if ($year<date('Y'))
+              @for ($i=$year+1; $i<=date('Y'); $i++)
+                <li>
+                  <a href="/accounts?year={{$i}}">{{$i}}</a>
+                </li>
+              @endfor
+            @endif
+          </ul>
           <div class="table-responsive">
-            <table class="table">
+            <table class="table table-bordered">
               <thead>
-                <tr>
-                  <th>{{__('common.id')}}</th>
+                <tr class="active">
                   <th>{{__('common.description')}}</th>
                   <?php for($i=0; $i<12; $i++) { ?>
-                    <th>
-                      {{__('common.months.'.$i)}}
-                      {{ date('Y-m-t', strtotime(date($year.'-'.($i+1).'-1'))) }}
+                    <th colspan="2">
+                      {{__('common.months.'.$i)}}   
                     </th>
                   <?php } ?>
                   <th>{{__('common.actions')}}</th>
@@ -38,33 +57,44 @@
                 ?>
                 @foreach($accounts as $account)
                   <tr>
-                    <td>
-                      {{$account->id}}
-                    </td>
-                    <td>
+                    <th rowspan="2" class="active">
                       {{$account->description}}
-                    </td>
+                    </th>
                     <?php 
                       $monthValueAccount[$account->id] = [];
                       for($i=0; $i<12; $i++) {
+                        $date_init = date($year.'-'.($i+1).'-1');
+                        $date_end = date('Y-m-t', strtotime($date_init));
                     ?>
-                      <td class="text-right">
                         <?php
-                          $monthValueAccountNotPaid[$account->id][$i] = $account->transactions()->where('paid', false)->where('date','<=', date('Y-m-t', strtotime(date($year.'-'.($i+1).'-1'))))->sum('value'); 
-                          $monthValueAccount[$account->id][$i] = $account->transactions()->where('paid', true)->where('date','<=', date('Y-m-t', strtotime(date($year.'-'.($i+1).'-1'))))->sum('value');
+                          $monthValueAccountNotPaid[$account->id][$i] = $account->transactions()->where('paid', false)->where('date','<=',$date_end)->sum('value'); 
+                          $monthValueAccount[$account->id][$i] = $account->transactions()->where('paid', true)->where('date','<=',$date_end )->sum('value');
                         ?>
-                        {!!format_money($monthValueAccount[$account->id][$i])!!}
-                        @if ($monthValueAccountNotPaid[$account->id][$i]>0)
-                          {!!format_money($monthValueAccountNotPaid[$account->id][$i])!!}
-                        @endif
+                        <td class="text-right" rowspan="2" style="vertical-align: middle;">
+                          <a style="margin-right: 5px;" title="{{__('transactions.title')}}" href="/account/{{$account->id}}/transactions?date_init={{$date_init}}&date_end={{$date_end}}">
+                            <i class="fa fa-list"></i>
+                          </a>
+                        </td>
+                        <td class="text-right">
+                          {!!format_money($monthValueAccount[$account->id][$i])!!}
+                        </td>
                       <?php
                         } 
                       ?>
+                    <td rowspan="2" style="text-align: center;vertical-align: middle;">
+                      <a title="{{__('common.edit')}} {{__('accounts.account')}}" href="/accounts/{{$account->id}}/edit"><i class="fa fa-pencil"/></i></a>
+                      <a title="{{__('common.remove')}} {{__('accounts.account')}}" href="/accounts/{{$account->id}}/confirm"><i class="fa fa-trash"/></i></a>
                     </td>
-                    <td>
-                      <a href="/accounts/{{$account->id}}/edit">{{__('common.edit')}}</a>
-                      <a href="/accounts/{{$account->id}}/confirm">{{__('common.remove')}}</a>
-                      <a href="/account/{{$account->id}}/transactions">{{__('transactions.title')}}</a>
+                  </tr>
+                  <tr>
+                    <?php for($i=0; $i<12; $i++) { ?>
+                      <td class="text-right">
+                        @if ($monthValueAccountNotPaid[$account->id][$i]>0)
+                          {!!format_money($monthValueAccountNotPaid[$account->id][$i])!!}
+                        @else
+                          {!!format_money(0)!!}
+                        @endif
+                      <?php } ?>
                     </td>
                   </tr>
                   <?php
@@ -73,20 +103,16 @@
                       $monthValueAccount[$creditCard->id] = [];
                       $monthValueAccountNotPaid[$creditCard->id] = [];
                       ?>
-                        <tr>
-                          <td style="border-top:none;">
-                            {{$creditCard->id}}
-                          </td>
-                          <td style="border-top:none;">
+                        <tr>  
+                          <th class="active">
                             {{$creditCard->description}}
-                          </td>
+                          </th>
                            @for($i=0; $i<12; $i++)
                               <?php
                                 $date_init = date('Y-m-d', strtotime(date($year.'-'.($i+1).'-1')));
                                 $date_end = date('Y-m-t', strtotime(date($year.'-'.($i+1).'-1')));
                                 $invoice = $creditCard->invoices()->whereBetween('debit_date',[$date_init, $date_end])->first();
                               ?>
-                                <td style="border-top:none; width:160px;" class="text-right">
                                   @if (isset($invoice))
                                     <?php
                                       $value = $invoice->transactions()->sum('value');
@@ -100,23 +126,28 @@
                                         $monthValueAccountNotPaid[$creditCard->id][$i] = $value; 
                                       }
                                     ?>
-                                    <button class="btn" style="width:100px; display: inline-block;" onclick="show_invoice({{$invoice->id}})">{!!format_money($value)!!}</button>
-                                    <button class="btn" style="display: inline-block;" href="/account/{{$creditCard->id}}/transactions?invoice_id={{$invoice->id}}">
-                                      <i class="fa fa-eye"></i>
-                                    </button>
-                                    <div id="invoice_{{$invoice->id}}" style="display: none;">
-                                      <label>Gasto:</label> {!!format_money($invoice->transactions()->where('value','<',0)->sum('value'))!!}<br>
-                                      <label>Pago:</label> {!!format_money($invoice->transactions()->where('value','>',0)->sum('value'))!!}<br>
-                                    </div>
+                                    <td class="text-right" style="vertical-align: middle;">
+                                      <a style="margin-right: 5px;" title="{{__('transactions.title')}}" href="/account/{{$creditCard->id}}/transactions?invoice_id={{$invoice->id}}">
+                                        <i class="fa fa-list"></i>
+                                      </a>
+                                    </td>
+                                    <td class="text-right">
+                                      <a href="#" onclick="show_invoice({{$invoice->id}})">{!!format_money($value)!!}</a>
+                                      <div id="invoice_{{$invoice->id}}" style="display: none;">
+                                        <label>Gasto:</label> {!!format_money($invoice->transactions()->where('value','<',0)->sum('value'))!!}<br>
+                                        <label>Pago:</label> {!!format_money($invoice->transactions()->where('value','>',0)->sum('value'))!!}<br>
+                                      </div>
+                                    </td>
                                   @else
-                                    {!!format_money(0)!!}
+                                    <td colspan="2" class="text-right">
+                                      {!!format_money(0)!!}
+                                    </td>
                                   @endif
                                 </td>
                             @endfor
-                          <td style="border-top:none;">
-                            <a href="/accounts/{{$creditCard->id}}/edit">{{__('common.edit')}}</a>
-                            <a href="/accounts/{{$creditCard->id}}/confirm">{{__('common.remove')}}</a>
-                            <a href="/account/{{$creditCard->id}}/transactions">{{__('transactions.title')}}</a>
+                          <td style="text-align: center;vertical-align: middle;">
+                            <a title="{{__('common.edit')}} {{__('accounts.account')}}" href="/accounts/{{$creditCard->id}}/edit"><i class="fa fa-pencil"/></i></a>
+                            <a  title="{{__('common.remove')}} {{__('accounts.account')}}" href="/accounts/{{$creditCard->id}}/confirm"><i class="fa fa-trash"/></i></a>
                           </td>
                         </tr>
                       <?php
@@ -125,8 +156,8 @@
                 @endforeach
               </tbody>
               <tfoot>
-                <tr>
-                  <th colspan="2" class="text-right">
+                <tr class="active">
+                  <th class="text-right">
                     {{__('accounts.totals_paid')}}
                   </th>
                   <?php
@@ -141,14 +172,14 @@
                         }
                       }
                     }?>
-                    <th class="text-right">
+                    <th class="text-right" colspan="2">
                       {!!format_money($sumPaid[$i])!!}
                     </th>
                   <?php } ?>
                   <th></th>
                 </tr>
-                <tr>
-                  <th colspan="2" class="text-right">
+                <tr class="active">
+                  <th class="text-right">
                     {{__('accounts.totals_not_paid')}}
                   </th>
                   <?php
@@ -164,18 +195,19 @@
                       }
                     }
                     ?>
-                    <th class="text-right">
+                    <th class="text-right" colspan="2">
                       {!!format_money($sumNotPaid[$i])!!}
                     </th>
                   <?php } ?>
                   <th></th>
-                </tr> <tr>
-                  <th colspan="2" class="text-right">
+                </tr>
+                <tr class="active">
+                  <th class="text-right">
                     {{__('accounts.totals')}}
                   </th>
                   <?php for($i=0; $i<12; $i++) {
                     ?>
-                    <th class="text-right">
+                    <th class="text-right" colspan="2">
                       {!!format_money($sumNotPaid[$i]+$sumPaid[$i])!!}
                     </th>
                   <?php } ?>
