@@ -23,6 +23,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('accounts', 'AccountController');
 Route::get('/accounts/{id}/confirm', 'AccountController@confirm');
 Route::get('account/{accountId}/transactions', 'TransactionController@index');
+Route::get('account/{accountId}/invoices', 'TransactionController@invoices');
 Route::get('account/{accountId}/transaction/create', 'TransactionController@create');
 Route::get('account/{accountId}/transaction/{transactionId}/edit', 'TransactionController@edit');
 Route::get('account/{accountId}/transaction/{transactionId}/confirm', 'TransactionController@confirm');

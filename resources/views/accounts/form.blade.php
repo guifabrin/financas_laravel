@@ -37,14 +37,6 @@
                           {{ Form::label('prefer_debit_account_id', __('accounts.prefer_debit_account')) }}
                           {{ Form::select('prefer_debit_account_id', $selectAccounts, old('prefer_debit_account_id', (isset($account)?$account->prefer_debit_account_id:null)), ['class'=>'form-control']) }}
                         </div>
-                        <div class="form-group" style="{{ !isset($account)? 'display: none;' : '' }}">
-                          {{ Form::label('debit_day', __('accounts.debit_day')) }}
-                          {{ Form::number('debit_day', old('debit_day', (isset($account)?$account->debit_day:null)), ['class'=>'form-control']) }}
-                        </div>
-                        <div class="form-group" style="{{ !isset($account)? 'display: none;' : '' }}">
-                          {{ Form::label('credit_close_day', __('accounts.credit_close_day')) }}
-                          {{ Form::number('credit_close_day', old('credit_close_day', (isset($account)?$account->credit_close_day:null)), ['class'=>'form-control']) }}
-                        </div>
                       <?php } ?>
                       <div class="form-group">
                         {{ Form::submit(__('common.save'),['class'=>'btn']) }}

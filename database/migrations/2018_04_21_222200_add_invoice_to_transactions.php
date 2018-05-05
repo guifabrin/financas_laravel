@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateUsersTable extends Migration
+class AddInvoiceToTransactions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class UpdateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function($table) {
-            $table->string('picture')->nullable(true);
-            $table->string('password')->nullable(true)->change();
+        Schema::table('transactions', function($table) {
+            $table->integer('invoice_id')->nullable()->unsigned();
+            $table->foreign('invoice_id')->references('id')->on('invoices');
         });
     }
 
@@ -26,9 +26,8 @@ class UpdateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function($table) {
-            $table->dropColumn('picture');
-            $table->string('password')->nullable(false)->change();
+        Schema::table('transactions', function($table) {
+            $table->dropColumn('invoice_id');
         });
     }
 }
