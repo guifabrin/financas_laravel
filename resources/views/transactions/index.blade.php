@@ -6,8 +6,14 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
         <div class="panel-heading">
-          {{__('transactions.title')}}
-          <a href="/account/{{$account->id}}/transaction/create">{{__('common.add')}}</a>
+          <div class="container-fluid">
+            <div class="col-md-11">
+              {{__('transactions.title')}}
+            </div>
+            <div class="col-md-1 text-right">
+              <a title="{{__('common.add')}}" href="/account/{{$account->id}}/transaction/create"><i class="fa fa-plus"></i></a>
+            </div>
+          </div>
         </div>
 
         <div class="panel-body">
@@ -18,17 +24,33 @@
           @endif
           
           {{ Form::open(['url' => '/account/'.$account->id.'/transactions/', 'method'=>'GET', 'class'=>'form-inline']) }}
-            <div class="form-group">
+          <div class="container-fluid">
+            <div class="col-md-5">
               {{ Form::label('date_init', __('common.date_init')) }}
-              {{ Form::date('date_init', old('date_init', date('Y-m-01')), ['class'=>'form-control']) }}
+              {{ Form::date('date_init', old('date_init', date('Y-m-01')), ['class'=>'form-control', 'style'=>'width:100%;']) }}
             </div>
-            <div class="form-group">
+            <div class="col-md-5">
               {{ Form::label('date_end', __('common.date_end')) }}
-              {{ Form::date('date_end', old('date_end', date('Y-m-t')), ['class'=>'form-control']) }}
+              {{ Form::date('date_end', old('date_end', date('Y-m-t')), ['class'=>'form-control', 'style'=>'width:100%;']) }}
             </div>
-            <div class="form-group">
-              {{ Form::submit(__('common.search'),['class'=>'btn']) }}
+            <div class="col-md-2" style='text-align: center;'>
+              {{ Form::label('search', __('common.search')) }}
+              <button class="btn btn-info"><i class="fa fa-search"></i></button>
             </div>
+          </div>
+          {{ Form::close() }}
+          {{ Form::open(['url' => '/account/'.$account->id.'/transactions/', 'method'=>'GET', 'class'=>'form-inline']) }}
+          <div class="container-fluid" style='margin-bottom:20px;'>
+            <hr>
+            <div class="col-md-10">
+              {{ Form::label('date_init', __('transactions.invoice')) }}
+              {{ Form::select('invoice_id', $account->getOptionsInvoices(false), old('invoice_id', isset($request->invoice_id) ? $request->invoice_id : null), ['class'=>'form-control', 'style'=>'width:100%;']) }}
+            </div>
+            <div class="col-md-2" style='text-align: center;'>
+              {{ Form::label('search', __('common.search')) }}
+              <button class="btn btn-info"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
           {{ Form::close() }}
           
           <table class="table">
@@ -36,15 +58,16 @@
               <tr>
                 <th>{{__('common.id')}}</th>
                 <th>{{__('common.date')}}</th>
-                <th>{{__('invoice.description')}}</th>
+                @if ($account->is_credit_card)
+                  <th>{{__('transactions.invoice')}}</th>
+                @endif
                 <th>{{__('common.description')}}</th>
-                <th>{{__('transactions.value')}}</th>
-                <th>{{__('transactions.paid')}}</th>
-                <th>{{__('common.actions')}}</th>
+                <th class="text-center">{{__('transactions.value')}}</th>
+                <th class="text-center">{{__('transactions.paid')}}</th>
+                <th class="text-center">{{__('common.actions')}}</th>
               </tr>
             </thead>
             <tbody>
-              <?php $value = 0?>
               @foreach($transactions as $transaction)
                 <tr>
                   <td>
@@ -53,39 +76,30 @@
                   <td>
                     {{format_date($transaction->date)}}
                   </td>
-                  <td>
-                    {{$transaction->invoice != null ? $transaction->invoice->description : '' }}
-                  </td>
+                  @if ($account->is_credit_card)
+                    <td>
+                      {{$transaction->invoice != null ? $transaction->invoice->description : '' }}
+                    </td>
+                  @endif
                   <td>
                     {{$transaction->description}}
                   </td>
-                  <td>
-                    <?php $value += $transaction->value?>
+                  <td class="text-right">
                     {!!format_money($transaction->value)!!}
                   </td>
-                  <td>
+                  <td class="text-center">
                     <div class="checkbox">
                       <label>
                         <input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
                       </label>
                     </div>
                   </td>
-                  <td>
-                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">{{__('common.edit')}}</a>
-                    <a href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm{{isset($_GET['date_init']) && isset($_GET['date_end']) ?'?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">{{__('common.remove')}}</a>
+                  <td class="text-center" style="vertical-align: middle;">
+                    <a title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}"><i class="fa fa-pencil"/></i></a>
+                    <a title="{{__('common.remove')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm{{isset($_GET['date_init']) && isset($_GET['date_end']) ?'?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}"><i class="fa fa-trash"/></i></a>
                   </td>
                 </tr>
               @endforeach
-              <tfoot>
-                <tr>
-                  <td colspan="4">
-                    
-                  </td>
-                  <td colspan="3">
-                    {!!format_money($value)!!}
-                  </td>
-                </tr>
-              </tfoot>
             </tbody>
           </table>
         </div>

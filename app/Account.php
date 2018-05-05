@@ -40,8 +40,12 @@ class Account extends Model
         return $this->hasMany('App\Invoice');
     }
 
-    public function getOptionsInvoices(){
-        $selectInvoices = [-1 =>__('common.create')];
+    public function getOptionsInvoices($create = true){
+        if ($create){
+            $selectInvoices = [-1 =>__('common.create')];
+        } else {
+            $selectInvoices = [];
+        }
         foreach($this->invoices()->get() as $invoice){
             $selectInvoices[$invoice->id] = $invoice->id."/".$invoice->description;
         }
