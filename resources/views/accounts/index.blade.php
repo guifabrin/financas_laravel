@@ -66,8 +66,9 @@
                     <a href="/account/{{$account->id}}/transactions">{{__('transactions.title')}}</a>
                   </td>
                 </tr>
-                <?php 
-                  foreach($account->creditCards() as $creditCard){
+                <?php
+
+                  /*foreach($account->creditCards() as $creditCard){
                     ?>
                       <tr>
                         <td style="border-top:none;">
@@ -90,6 +91,7 @@
                     <?php
                       //$end_month_sum += $creditCard->amount;
                   }
+                    */
                 ?>
               @endforeach
             </tbody>

@@ -13,7 +13,7 @@ class Invoice extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'description'
+        'id', 'description', 'date_init', 'date_end', 'debit_date', 'closed'
     ];
 
     public function account()

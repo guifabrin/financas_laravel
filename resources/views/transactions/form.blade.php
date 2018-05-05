@@ -27,9 +27,15 @@
                 {{ Form::label('invoice_id', __('transactions.invoice')) }}
                 {{ Form::select('invoice_id', $account->getOptionsInvoices(), old('invoice_id', isset($transaction) ? $transaction->invoice_id : null), ['class'=>'form-control', 'onchange'=>'showHideInvoiceDescription(this.value);']) }}
               </div>
-              <div id="invoice_description" class="form-group" style="{{ isset($transaction) && ($transaction->invoice_id==-1 || $transaction->invoice_id==null) ? '' : 'display: none' }};">
+              <div id="new_invoice" class="form-group" style="{{ isset($transaction) && ($transaction->invoice_id==-1 || $transaction->invoice_id==null) ? '' : 'display: none' }};">
                 {{ Form::label('invoice_description', __('transactions.invoice_description')) }}
                 {{ Form::text('invoice_description', old('invoice_description', null), ['class'=>'form-control']) }}
+                {{ Form::label('invoice_date_init', __('transactions.invoice_date_init')) }}
+                {{ Form::text('invoice_date_init', old('invoice_date_init', null), ['class'=>'form-control']) }}
+                {{ Form::label('invoice_date_end', __('transactions.invoice_date_end')) }}
+                {{ Form::text('invoice_date_end', old('invoice_date_end', null), ['class'=>'form-control']) }}
+                {{ Form::label('invoice_debit_date', __('transactions.invoice_debit_date')) }}
+                {{ Form::text('invoice_debit_date', old('invoice_debit_date', null), ['class'=>'form-control']) }}
               </div>
             @endif
             <div class="form-group">
@@ -58,11 +64,14 @@
 </div>
 @if ($account->is_credit_card)
   <script>
+    $(function(){
+      showHideInvoiceDescription($('#invoice_id').val());
+    });
     function showHideInvoiceDescription(value){
       if (value==-1){
-        $('#invoice_description').slideDown();
+        $('#new_invoice').slideDown();
       } else {
-        $('#invoice_description').slideUp();
+        $('#new_invoice').slideUp();
       }
     }
   </script>

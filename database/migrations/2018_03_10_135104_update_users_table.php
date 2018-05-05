@@ -27,7 +27,7 @@ class UpdateUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function($table) {
-            $table->dropColumn('picture')->nullable(true);
+            $table->dropColumn('picture');
             $table->string('password')->nullable(false)->change();
         });
     }

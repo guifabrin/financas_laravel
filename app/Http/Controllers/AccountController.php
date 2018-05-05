@@ -25,7 +25,8 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $accounts = \Auth::user()->accounts()->where('is_credit_card',false)->paginate(10);
+        //$accounts = \Auth::user()->accounts()->where('is_credit_card',false)->paginate(10);
+        $accounts = \Auth::user()->accounts()->paginate(10);
         $year = isset($request->year)?$request->year:date('Y');
         return view('accounts.index', ['accounts' => $accounts, 'year'=>$year]);
     }
