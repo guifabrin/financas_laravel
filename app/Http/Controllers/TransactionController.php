@@ -46,11 +46,15 @@ class TransactionController extends Controller
         if (!$account){
             return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
         } else {
-            $transactions =  $account->transactions()->orderBy('date')->orderBy('description');
-            if ($request->input('date_init')!==null && $request->input('date_end')!==null){
-                $transactions->whereBetween('date',[$request->input('date_init'), $request->input('date_end')]);
+            if (isset($request->invoice_id)){
+                $transactions =  $account->invoices()->where('id',$request->invoice_id)->first()->transactions()->orderBy('date')->orderBy('description');
             } else {
-                $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
+                $transactions =  $account->transactions()->orderBy('date')->orderBy('description');
+                if ($request->input('date_init')!==null && $request->input('date_end')!==null){
+                    $transactions->whereBetween('date',[$request->input('date_init'), $request->input('date_end')]);
+                } else {
+                    $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
+                }
             }
             $transactions = $transactions->get();
             return view('transactions.index', ['account' => $account, 'transactions' => $transactions]);
@@ -89,8 +93,19 @@ class TransactionController extends Controller
                 if ($request->invoice_id==null){
                     $validator->errors()->add('invoice_id', __('transactions.need_set_invoice'));
                 }
-                if ($request->invoice_id==-1 && ($request->invoice_description==null || strlen($request->invoice_description)<5)){
-                    $validator->errors()->add('invoice_id', __('transactions.invoice_description_min_5'));    
+                if ($request->invoice_id==-1){
+                    if ($request->invoice_description==null || strlen($request->invoice_description)<5){
+                        $validator->errors()->add('invoice_id', __('transactions.invoice_description_min_5'));    
+                    }
+                    if ($request->invoice_date_init==null){
+                        $validator->errors()->add('invoice_id', __('transactions.invoice_date_init_required'));    
+                    }
+                    if ($request->invoice_date_end==null){
+                        $validator->errors()->add('invoice_id', __('transactions.invoice_date_end_required'));    
+                    }
+                    if ($request->invoice_debit_date==null){
+                        $validator->errors()->add('invoice_id', __('transactions.invoice_debit_date_required'));    
+                    }
                 }
             }
         })->validate();
@@ -114,6 +129,9 @@ class TransactionController extends Controller
                 $invoice = new Invoice;
                 $invoice->account()->associate($account);
                 $invoice->description = $request->invoice_description;
+                $invoice->date_init = $request->invoice_date_init;
+                $invoice->date_end = $request->invoice_date_end;
+                $invoice->debit_date = $request->invoice_debit_date;
                 $invoice->save();
                 $invoice_id = $invoice->id;
             } else if ($request->invoice_id!=null){
@@ -195,11 +213,13 @@ class TransactionController extends Controller
                 if ($paid){
                     $account->amount += $request->value;
                 }
-                $invoice_id = null;
-                if ($request->invoice_id==-1){
+               if ($request->invoice_id==-1){
                     $invoice = new Invoice;
-                    $invoice->description = $request->invoice_description;
                     $invoice->account()->associate($account);
+                    $invoice->description = $request->invoice_description;
+                    $invoice->date_init = $request->invoice_date_init;
+                    $invoice->date_end = $request->invoice_date_end;
+                    $invoice->debit_date = $request->invoice_debit_date;
                     $invoice->save();
                     $invoice_id = $invoice->id;
                 } else if ($request->invoice_id!=null){

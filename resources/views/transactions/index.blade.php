@@ -45,6 +45,7 @@
               </tr>
             </thead>
             <tbody>
+              <?php $value = 0?>
               @foreach($transactions as $transaction)
                 <tr>
                   <td>
@@ -60,6 +61,7 @@
                     {{$transaction->description}}
                   </td>
                   <td>
+                    <?php $value += $transaction->value?>
                     {!!format_money($transaction->value)!!}
                   </td>
                   <td>
@@ -75,6 +77,16 @@
                   </td>
                 </tr>
               @endforeach
+              <tfoot>
+                <tr>
+                  <td colspan="4">
+                    
+                  </td>
+                  <td colspan="3">
+                    {!!format_money($value)!!}
+                  </td>
+                </tr>
+              </tfoot>
             </tbody>
           </table>
         </div>
