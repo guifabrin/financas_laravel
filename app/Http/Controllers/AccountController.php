@@ -26,8 +26,78 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $accounts = \Auth::user()->accounts()->where('is_credit_card',false)->paginate(10);
-        $year = isset($request->year)?$request->year:date('Y');
-        return view('accounts.index', ['accounts' => $accounts, 'year'=>$year]);
+        $actualYear = isset($request->year)?$request->year:date('Y');
+        $yearDiff = (date('Y')-$actualYear);
+        $j = 10-$yearDiff;
+        if ($j<=0){
+          $j=1;
+        }
+        $years = [];
+        for ($i=$actualYear-$j; $i<=$actualYear; $i++){
+          $years[] = $i;
+        }
+        if ($actualYear<date('Y')){
+          for ($i=$year+1; $i<=date('Y'); $i++){
+            $years[] = $i;
+          }
+        }
+        $monthValueAccount = [];
+        $monthValueAccountNotPaid = [];
+        $dateInit = [];
+        $dateEnd = [];
+        for($i=0; $i<12; $i++) {
+          $dateInit[$i] = date($actualYear.'-'.($i+1).'-1');
+          $dateEnd[$i] = date('Y-m-t', strtotime($dateInit[$i]));
+        }
+        $accountsResult = [];
+        foreach($accounts as $account){
+          $accountResult = new \stdClass;
+          $accountResult->id = $account->id;
+          $accountResult->description = $account->description;
+          $monthValueAccount[$account->id] = [];
+          $monthValueAccountNotPaid[$account->id] = [];
+          for($i=0; $i<12; $i++) {
+            $monthValueAccountNotPaid[$account->id][$i] = $account->transactions()->where('paid', false)->where('date','<=',$dateEnd[$i])->sum('value'); 
+            $monthValueAccount[$account->id][$i] = $account->transactions()->where('paid', true)->where('date','<=',$dateEnd[$i] )->sum('value');
+          }
+          $accountsResult[] = $accountResult;
+          foreach($account->creditCards() as $creditCard){
+            $accountResult = new \stdClass;
+            $accountResult->id = $creditCard->id;
+            $accountResult->description = $creditCard->description;
+            $monthValueAccount[$creditCard->id] = [];
+            $monthValueAccountNotPaid[$creditCard->id] = [];
+            for($i=0; $i<12; $i++) {
+              $invoice = $creditCard->invoices()->whereBetween('debit_date',[$dateInit[$i], $dateEnd[$i]])->first();
+              if (isset($invoice)){
+                $value = $invoice->transactions()->sum('value');
+                $lastInvoices = $creditCard->invoices()->where('id','<',$invoice->id)->get();
+                foreach ($lastInvoices as $lastInvoice){
+                  $value+=$lastInvoice->transactions()->sum('value');
+                }
+                if ($creditCard->closed && $creditCard->debit_date>=date()){
+                  $monthValueAccount[$creditCard->id][$i] = $value; 
+                } else {
+                  $monthValueAccountNotPaid[$creditCard->id][$i] = $value; 
+                }
+              } else {
+                $monthValueAccount[$creditCard->id][$i] = 0;
+                $monthValueAccountNotPaid[$creditCard->id][$i] = 0; 
+              }
+            }
+            $accountsResult[] = $accountResult;
+          }
+        }
+        $sumPaid = [];
+        for($i=0; $i<12; $i++) {
+          $sumPaid[$i] = 0;
+          $sumNotPaid[$i] = 0;
+          foreach ($accountsResult as $account) {
+            $sumPaid[$i] += $monthValueAccount[$account->id][$i];
+            $sumNotPaid[$i] += $monthValueAccountNotPaid[$account->id][$i];
+          }
+        }
+        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid]);
     }
 
     private function getOptionsPreferDebitAccount(){
