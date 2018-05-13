@@ -6,7 +6,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Account;
 
-class AccountController extends Controller
+class InvoiceController extends Controller
 {
     /**
      * Create a new controller instance.
