@@ -21,5 +21,6 @@ return [
     'debit_date' => 'Data de Débito',
     'search' => 'Pesquisar',
     'months'=> ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-    'create' => 'Criar'
+    'create' => 'Criar',
+    'import' => 'Importar'
 ];

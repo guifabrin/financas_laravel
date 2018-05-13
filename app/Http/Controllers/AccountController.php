@@ -37,7 +37,7 @@ class AccountController extends Controller
           $years[] = $i;
         }
         if ($actualYear<date('Y')){
-          for ($i=$year+1; $i<=date('Y'); $i++){
+          for ($i=$actualYear+1; $i<=date('Y'); $i++){
             $years[] = $i;
           }
         }
@@ -46,12 +46,13 @@ class AccountController extends Controller
         $dateInit = [];
         $dateEnd = [];
         for($i=0; $i<12; $i++) {
-          $dateInit[$i] = date($actualYear.'-'.($i+1).'-1');
+          $dateInit[$i] = date("Y-m-d", strtotime(date($actualYear.'-'.($i+1).'-1')));
           $dateEnd[$i] = date('Y-m-t', strtotime($dateInit[$i]));
         }
         $accountsResult = [];
         foreach($accounts as $account){
           $accountResult = new \stdClass;
+          $accountResult->invoice = false;
           $accountResult->id = $account->id;
           $accountResult->description = $account->description;
           $monthValueAccount[$account->id] = [];
@@ -63,6 +64,7 @@ class AccountController extends Controller
           $accountsResult[] = $accountResult;
           foreach($account->creditCards() as $creditCard){
             $accountResult = new \stdClass;
+            $accountResult->invoice = true;
             $accountResult->id = $creditCard->id;
             $accountResult->description = $creditCard->description;
             $monthValueAccount[$creditCard->id] = [];

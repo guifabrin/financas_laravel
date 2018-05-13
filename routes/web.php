@@ -30,3 +30,4 @@ Route::get('account/{accountId}/transaction/{transactionId}/confirm', 'Transacti
 Route::post('account/{accountId}/transaction', 'TransactionController@store');
 Route::put('account/{accountId}/transaction/{transactionId}', 'TransactionController@update');
 Route::delete('account/{accountId}/transaction/{transactionId}', 'TransactionController@destroy');
+Route::post('account/{accountId}/uploadOfx', 'TransactionController@uploadOfx');

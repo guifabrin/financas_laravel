@@ -5,5 +5,5 @@ function format_money($value){
 }
 
 function format_date($date){
-  return date_format(date_create_from_format('Y-m-d', $date), __('config.date_format'));
+  return $date;
 }

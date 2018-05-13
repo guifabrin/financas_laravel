@@ -33,7 +33,7 @@
             <table class="table table-bordered">
               <thead>
                 <tr class="active">
-                  <th colspan="3">{{__('common.description')}}</th>
+                  <th colspan="4">{{__('common.description')}}</th>
                   @for ($i=0; $i<12; $i++)
                     <th colspan="2">
                       {{__('common.months.'.$i)}}   
@@ -53,11 +53,20 @@
                     <th class="active text-right" rowspan="2" style="vertical-align: middle;">
                       <a title="{{__('common.remove')}} {{__('accounts.account')}}" href="/accounts/{{$account->id}}/confirm"><i class="fa fa-trash"/></i></a>
                     </th>
+                    <th class="active text-right" rowspan="2" style="vertical-align: middle;">
+                      <a title="{{__('common.import')}} {{__('accounts.account')}}" href="#" data-toggle="modal" data-target="#model_account_{{$account->id}}"><i class="fa fa-upload"/></i></a>
+                    </th>
                     @for($i=0; $i<12; $i++) 
                       <td class="text-right" rowspan="2" style="vertical-align: middle;">
-                        <a style="margin-right: 5px;" title="{{__('transactions.title')}}" href="/account/{{$account->id}}/transactions?date_init={{$dateInit[$i]}}&date_end={{$dateEnd[$i]}}">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        @if ($account->invoice)
+                          <a style="margin-right: 5px;" title="{{__('transactions.title')}}" href="/account/{{$account->id}}/transactions?invoice=true&date_init={{$dateInit[$i]}}&date_end={{$dateEnd[$i]}}">
+                            <i class="fa fa-list"></i>
+                          </a>
+                        @else
+                          <a style="margin-right: 5px;" title="{{__('transactions.title')}}" href="/account/{{$account->id}}/transactions?date_init={{$dateInit[$i]}}&date_end={{$dateEnd[$i]}}">
+                            <i class="fa fa-list"></i>
+                          </a>
+                        @endif
                       </td>
                       <td class="text-right">
                         {!!format_money($monthValueAccount[$account->id][$i])!!}
@@ -79,7 +88,7 @@
               </tbody>
               <tfoot>
                 <tr class="active">
-                  <th class="text-right" colspan="3">
+                  <th class="text-right" colspan="4">
                     {{__('accounts.totals_paid')}}
                   </th>
                   @foreach($sumPaid as $sum)
@@ -89,7 +98,7 @@
                   @endforeach
                 </tr>
                 <tr class="active">
-                  <th class="text-right" colspan="3">
+                  <th class="text-right" colspan="4">
                     {{__('accounts.totals_not_paid')}}
                   </th>
                   @foreach($sumNotPaid as $sum)
@@ -99,7 +108,7 @@
                   @endforeach
                 </tr>
                 <tr class="active">
-                  <th class="text-right" colspan="3">
+                  <th class="text-right" colspan="4">
                     {{__('accounts.totals')}}
                   </th>
                   @for($i=0; $i<12; $i++)
@@ -116,6 +125,10 @@
     </div>
   </div>
 </div>
+
+@foreach($accounts as $account)
+  @include('accounts/import', ['account'=>$account])
+@endforeach
 @endsection
 
 @section('script')
