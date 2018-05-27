@@ -7,14 +7,14 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           {{__('accounts.confirm_destroy')}}
-          <a href="/accounts">{{__('common.back')}}</a>
+          <a href="/accounts/{{$account->id}}/invoices">{{__('common.back')}}</a>
         </div>
 
         <div class="panel-body">
-         {{ Form::open(['url' => '/account/'.$account->id.'', 'method'=>'DELETE']) }}
-            {{__('accounts.confirmation_text', ['id'=>$account->id, 'description'=>$account->description])}}
+         {{ Form::open(['url' => '/account/'.$account->id.'/invoice/'.$invoice->id, 'method'=>'DELETE']) }}
+            {{__('invoices.confirmation_text', ['id'=>$invoice->id, 'description'=>$account->invoice])}}
             <div class="form-group">
-              <a href="/accounts">{{__('common.back')}}</a>
+              <a href="/accounts/{{$account->id}}/invoices">{{__('common.back')}}</a>
               {{ Form::submit(__('common.save'),['class'=>'btn']) }}
             </div>
           {{ Form::close() }} 

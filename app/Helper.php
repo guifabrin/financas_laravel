@@ -7,3 +7,7 @@ function format_money($value){
 function format_date($date){
   return $date;
 }
+
+function formatDateTime($date){
+  return date( __('config.date_time_format'),strtotime($date));
+}

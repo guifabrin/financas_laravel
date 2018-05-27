@@ -22,12 +22,25 @@ Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCall
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('accounts', 'AccountController');
 Route::get('/accounts/{id}/confirm', 'AccountController@confirm');
-Route::get('account/{accountId}/transactions', 'TransactionController@index');
-Route::get('account/{accountId}/invoices', 'TransactionController@invoices');
-Route::get('account/{accountId}/transaction/create', 'TransactionController@create');
-Route::get('account/{accountId}/transaction/{transactionId}/edit', 'TransactionController@edit');
-Route::get('account/{accountId}/transaction/{transactionId}/confirm', 'TransactionController@confirm');
-Route::post('account/{accountId}/transaction', 'TransactionController@store');
-Route::put('account/{accountId}/transaction/{transactionId}', 'TransactionController@update');
-Route::delete('account/{accountId}/transaction/{transactionId}', 'TransactionController@destroy');
-Route::post('account/{accountId}/uploadOfx', 'TransactionController@uploadOfx');
+Route::group(['middleware' => ['account']], function () {
+  Route::get('account/{accountId}/transactions', 'TransactionController@index');
+  Route::get('account/{accountId}/transaction/create', 'TransactionController@create');
+  Route::post('account/{accountId}/transaction', 'TransactionController@store');
+  Route::post('account/{accountId}/uploadOfx', 'TransactionController@uploadOfx');
+  
+  Route::get('account/{accountId}/invoices', 'InvoiceController@index');
+  Route::get('account/{accountId}/invoice/create', 'InvoiceController@create');
+  Route::post('account/{accountId}/invoice', 'InvoiceController@store');
+});
+Route::group(['middleware' => ['account', 'transaction']], function () {
+  Route::get('account/{accountId}/transaction/{transactionId}/edit', 'TransactionController@edit');
+  Route::get('account/{accountId}/transaction/{transactionId}/confirm', 'TransactionController@confirm');
+  Route::put('account/{accountId}/transaction/{transactionId}', 'TransactionController@update');
+  Route::delete('account/{accountId}/transaction/{transactionId}', 'TransactionController@destroy');
+});
+Route::group(['middleware' => ['account', 'invoice']], function () {
+  Route::get('account/{accountId}/invoice/{invoiceId}/edit', 'InvoiceController@edit');
+  Route::get('account/{accountId}/invoice/{invoiceId}/confirm', 'InvoiceController@confirm');
+  Route::put('account/{accountId}/invoice/{invoiceId}', 'InvoiceController@update');
+  Route::delete('account/{accountId}/invoice/{invoiceId}', 'InvoiceController@destroy');
+});

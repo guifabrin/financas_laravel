@@ -21,56 +21,37 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
-    private function verifyTransaction($account, $transactionId){
-        if (!$transactionId || !($transaction = $account->transactions->where('id', $transactionId)->first())){
-            return false;
-        } else {
-            return $transaction;
-        }
-    }
-
-    private function verifyAccount($accountId){
-        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
-            return false;
-        } else {
-            return $account;
-        }
-
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $accountId)
+    public function index(Request $request)
     {
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+      $date_init = $request->input('date_init');
+      $date_end = $request->input('date_end');
+      if (isset($request->invoice)){
+        $invoice = $request->account->invoices()->whereBetween('debit_date',[$date_init, $date_end])->first();
+        if (isset($invoice)){
+          $transactions = $invoice->transactions()->orderBy('date')->orderBy('description');
         } else {
-            if (isset($request->invoice)){
-                $invoice = $account->invoices()->whereBetween('debit_date',[$request->input('date_init'), $request->input('date_end')])->first();
-                if (isset($invoice)){
-                  $transactions = $invoice->transactions()->orderBy('date')->orderBy('description');
-                } else {
-                  $transactions =  $account->transactions()->orderBy('date')->orderBy('description');
-                  if ($request->input('date_init')!==null && $request->input('date_end')!==null){
-                    $transactions->whereBetween('date',[$request->input('date_init'), $request->input('date_end')]);
-                  } else {
-                      $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
-                  }
-                }
-            } else {
-              $transactions =  $account->transactions()->orderBy('date')->orderBy('description');
-              if ($request->input('date_init')!==null && $request->input('date_end')!==null){
-                $transactions->whereBetween('date',[$request->input('date_init'), $request->input('date_end')]);
-              } else {
-                $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
-              }
-            }
-            $transactions = $transactions->get();
-            return view('transactions.index', ['account' => $account, 'transactions' => $transactions]);
+          $transactions =  $request->account->transactions()->orderBy('date')->orderBy('description');
+          if ($date_init!==null && $date_end!==null){
+            $transactions->whereBetween('date',[$date_init, $date_end]);
+          } else {
+            $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
+          }
         }
+      } else {
+        $transactions =  $request->account->transactions()->orderBy('date')->orderBy('description');
+        if ($date_init!==null && $date_end!==null){
+          $transactions->whereBetween('date',[$date_init, $date_end]);
+        } else {
+          $transactions->whereBetween('date',[date('Y-m-01'), date('Y-m-t')]);
+        }
+      }
+      $transactions = $transactions->get();
+      return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions]);
     }
 
     /**
@@ -78,18 +59,13 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($accountId)
+    public function create(Request $request)
     {
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            return view('transactions.form', ['action'=>__('common.add'),'account' => $account]);
-        }
+      return view('transactions.form', ['action'=>__('common.add'),'account' => $request->account]);
     }
 
 
-    private function valid($request, $account){
+    private function valid($request){
         return Validator::make($request->all(),[
             'description' => 'required|min:5|max:100',
             'date' => 'required',
@@ -100,8 +76,8 @@ class TransactionController extends Controller
             'description.max' => __('common.description_max_100'),
             'date.required' => __('common.date_required'),
             'value.required' => __('common.date_required')
-        ])->after(function ($validator) use ($request, $account){
-            if ($account->is_credit_card) {
+        ])->after(function ($validator) use ($request){
+            if ($request->account->is_credit_card) {
                 if ($request->invoice_id==null){
                     $validator->errors()->add('invoice_id', __('transactions.need_set_invoice'));
                 }
@@ -129,39 +105,31 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $accountId)
+    public function store(Request $request)
     {
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            $this->valid($request, $account);
-            $invoice_id = null;
-            if ($request->invoice_id==-1){
-                $invoice = new Invoice;
-                $invoice->account()->associate($account);
-                $invoice->description = $request->invoice_description;
-                $invoice->date_init = $request->invoice_date_init;
-                $invoice->date_end = $request->invoice_date_end;
-                $invoice->debit_date = $request->invoice_debit_date;
-                $invoice->save();
-                $invoice_id = $invoice->id;
-            } else if ($request->invoice_id!=null){
-                $invoice_id = $request->invoice_id;    
-            }
-            $transaction = new Transaction;
-            $transaction->account()->associate($account);
-            $transaction->date = $request->date;
-            $transaction->description =$request->description;
-            $transaction->value = $request->value;
-            $transaction->paid = isset($request->paid)?$request->paid:false;
-            $transaction->invoice_id = $invoice_id;
-            $transaction->save();
-            return redirect('/account/'.$account->id.'/transactions/'.
-                (
-                    (isset($_GET) && isset($_GET['date_init']) && isset($_GET['date_end']))
-                    ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : ''));    
-        }
+      $this->valid($request);
+      $invoice_id = null;
+      if ($request->invoice_id==-1){
+          $invoice = new Invoice;
+          $invoice->account()->associate($request->account);
+          $invoice->description = $request->invoice_description;
+          $invoice->date_init = $request->invoice_date_init;
+          $invoice->date_end = $request->invoice_date_end;
+          $invoice->debit_date = $request->invoice_debit_date;
+          $invoice->save();
+          $invoice_id = $invoice->id;
+      } else if ($request->invoice_id!=null){
+          $invoice_id = $request->invoice_id;    
+      }
+      $transaction = new Transaction;
+      $transaction->account()->associate($request->account);
+      $transaction->date = $request->date;
+      $transaction->description =$request->description;
+      $transaction->value = $request->value;
+      $transaction->paid = isset($request->paid)?$request->paid:false;
+      $transaction->invoice_id = $invoice_id;
+      $transaction->save();
+      return redirect('/account/'.$request->account->id.'/transactions/'. ((isset($_GET) && isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : ''));    
     }
 
     /**
@@ -170,7 +138,7 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         //
     }
@@ -181,19 +149,9 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($accountId, $transactionId)
+    public function edit(Request $request)
     {
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            $transaction = $this->verifyTransaction($account, $transactionId);
-            if (!$transaction){
-                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
-            } else {
-                return view('transactions.form', ['action'=>__('common.edit'),'account' => $account, 'transaction' => $transaction]);
-            }
-        }
+      return view('transactions.form', ['action'=>__('common.edit'),'account' => $request->account, 'transaction' => $request->transaction]);
     }
 
     /**
@@ -203,55 +161,36 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $accountId, $transactionId)
-    {   $date_query = (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '';
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            $this->valid($request, $account);
-            $transaction = $this->verifyTransaction($account, $transactionId);
-            if (!$transaction){
-                return redirect('/account/'.$account->id.'/transactions'.$date_query)->withErrors([__('transactions.not_your_transaction')]);
-            } else {
-                $paid = isset($request->paid)?$request->paid:false;
-                $invoice_id = null;
-                if ($request->invoice_id==-1){
-                    $invoice = new Invoice;
-                    $invoice->account()->associate($account);
-                    $invoice->description = $request->invoice_description;
-                    $invoice->date_init = $request->invoice_date_init;
-                    $invoice->date_end = $request->invoice_date_end;
-                    $invoice->debit_date = $request->invoice_debit_date;
-                    $invoice->save();
-                    $invoice_id = $invoice->id;
-                } else if ($request->invoice_id!=null){
-                    $invoice_id = $request->invoice_id;    
-                }
-                $transaction->date = $request->date;
-                $transaction->description =$request->description;
-                $transaction->value = $request->value;
-                $transaction->paid = $paid;
-                $transaction->invoice_id = $invoice_id;
-                $transaction->save();
-                $account->save();
-                return redirect('/account/'.$account->id.'/transactions'.$date_query);
-            }
-        }
+    public function update(Request $request)
+    {   
+      $this->valid($request);
+      $date_query = (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '';
+      $paid = isset($request->paid)?$request->paid:false;
+      $invoice_id = null;
+      if ($request->invoice_id==-1){
+          $invoice = new Invoice;
+          $invoice->account()->associate($request->account);
+          $invoice->description = $request->invoice_description;
+          $invoice->date_init = $request->invoice_date_init;
+          $invoice->date_end = $request->invoice_date_end;
+          $invoice->debit_date = $request->invoice_debit_date;
+          $invoice->save();
+          $invoice_id = $invoice->id;
+      } else if ($request->invoice_id!=null){
+          $invoice_id = $request->invoice_id;    
+      }
+      $request->transaction->date = $request->date;
+      $request->transaction->description =$request->description;
+      $request->transaction->value = $request->value;
+      $request->transaction->paid = $paid;
+      $request->transaction->invoice_id = $invoice_id;
+      $request->transaction->save();
+      $request->account->save();
+      return redirect('/account/'.$request->account->id.'/transactions'.$date_query);
     }
 
-    public function confirm($accountId, $transactionId){
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            $transaction = $this->verifyTransaction($account, $transactionId);
-            if (!$transaction){
-                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
-            } else {
-                return view('transactions.confirm', ['account' => $account, 'transaction' => $transaction]);
-            }
-        }
+    public function confirm(Request $request){
+      return view('transactions.confirm', ['account' => $request->account, 'transaction' => $request->transaction]);
     }
 
     /**
@@ -260,60 +199,76 @@ class TransactionController extends Controller
      * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($accountId,$transactionId)
+    public function destroy(Request $request)
     {
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            $transaction = $this->verifyTransaction($account, $transactionId);
-            if (!$transaction){
-                return redirect('/account/'.$account->id.'/transactions')->withErrors([__('transactions.not_your_transaction')]);
-            } else {
-                $transaction->delete();
-                $account->save();
-                return redirect('/account/'.$account->id.'/transactions');
+      $request->transaction->delete();
+      return redirect('/account/'.$request->account->id.'/transactions');
+    }
+
+    public function getOfxAsXML($file) {
+        $content = file_get_contents($file);
+        $line = strpos($content, "<OFX>");
+        $ofx = substr($content, $line - 1);
+        $buffer = $ofx;
+        $count = 0;
+        while ($pos = strpos($buffer, '<')) {
+            $count++;
+            $pos2 = strpos($buffer, '>');
+            $element = substr($buffer, $pos + 1, $pos2 - $pos - 1);
+            if (substr($element, 0, 1) == '/')
+                $sla[] = substr($element, 1);
+            else
+                $als[] = $element;
+            $buffer = substr($buffer, $pos2 + 1);
+        }
+        $adif = array_diff($als, $sla);
+        $adif = array_unique($adif);
+        $ofxy = $ofx;
+        foreach ($adif as $dif) {
+            $dpos = 0;
+            while ($dpos = strpos($ofxy, $dif, $dpos + 1)) {
+                $npos = strpos($ofxy, '<', $dpos + 1);
+                $ofxy = substr_replace($ofxy, "</$dif>\n<", $npos, 1);
+                $dpos = $npos + strlen($element) + 3;
             }
         }
+        $ofxy = str_replace('&', '&amp;', $ofxy);
+        return $ofxy;
     }
 
-    public function invoices($accountId){
-
-        $account = $this->verifyAccount($accountId);
-        if (!$account){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-        } else {
-            return view('transactions.invoices', ['account' => $account]);
+    public function uploadOfx(UploadOfxRequest $request)
+    {
+      foreach ($request->file('ofx-file') as $file) {
+        $xmlstr = $this->getOfxAsXML($file);
+        $ofxParser = new \OfxParser\Parser();
+        $xml = simplexml_load_string($xmlstr);
+        $ofx = new \OfxParser\Ofx($xml);
+        $bankAccount = reset($ofx->bankAccounts);
+        $startDate = $bankAccount->statement->startDate;
+        $endDate = $bankAccount->statement->endDate;
+        $invoice_id = null;
+        if ($request->account->is_credit_card){
+            $invoice = new Invoice;
+            $invoice->account()->associate($request->account);
+            $invoice->description = "Invoice ".$file->getClientOriginalName();
+            $invoice->date_init = $startDate;
+            $invoice->date_end = $endDate;
+            $invoice->debit_date = new \DateTime();
+            $invoice->save();
+            $invoice_id = $invoice->id; 
         }
-    }
-
-    public function uploadOfx(UploadOfxRequest $request, $accountId)
-    { 
-      $account = $this->verifyAccount($accountId);
-      if (!$account){
-          return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
-      } else {
-        foreach ($request->file('ofx-file') as $file) {
-          $ofxParser = new \OfxParser\Parser();
-          $ofx = $ofxParser->loadFromFile($file->getRealPath());
-
-          $bankAccount = reset($ofx->bankAccounts);
-
-          // Get the statement start and end dates
-          $startDate = $bankAccount->statement->startDate;
-          $endDate = $bankAccount->statement->endDate;
-
-          // Get the statement transactions for the account
-          $transactions = $bankAccount->statement->transactions;
-          foreach($transactions as $ofxTransaction){
-            $transaction = new Transaction;
-            $transaction->date = $ofxTransaction->date;
-            $transaction->description = $ofxTransaction->memo;
-            $transaction->value = $ofxTransaction->amount;
-            $transaction->paid = true;
-            $transaction->account_id = $accountId;
-            $transaction->save();
+        $transactions = $bankAccount->statement->transactions;
+        foreach($transactions as $ofxTransaction){
+          $transaction = new Transaction;
+          $transaction->date = $ofxTransaction->date;
+          $transaction->description = $ofxTransaction->memo;
+          $transaction->value = $ofxTransaction->amount;
+          $transaction->paid = true;
+          $transaction->account_id = $request->account->id;
+          if ($request->account->is_credit_card){
+            $transaction->invoice_id = $invoice_id;
           }
+          $transaction->save();
         }
       }
       return redirect('/accounts/');

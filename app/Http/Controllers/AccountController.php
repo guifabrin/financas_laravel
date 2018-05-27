@@ -41,8 +41,6 @@ class AccountController extends Controller
             $years[] = $i;
           }
         }
-        $monthValueAccount = [];
-        $monthValueAccountNotPaid = [];
         $dateInit = [];
         $dateEnd = [];
         for($i=0; $i<12; $i++) {
@@ -50,6 +48,8 @@ class AccountController extends Controller
           $dateEnd[$i] = date('Y-m-t', strtotime($dateInit[$i]));
         }
         $accountsResult = [];
+        $monthValueAccount = [];
+        $monthValueAccountNotPaid = [];
         foreach($accounts as $account){
           $accountResult = new \stdClass;
           $accountResult->invoice = false;
@@ -70,21 +70,20 @@ class AccountController extends Controller
             $monthValueAccount[$creditCard->id] = [];
             $monthValueAccountNotPaid[$creditCard->id] = [];
             for($i=0; $i<12; $i++) {
+              $monthValueAccount[$creditCard->id][$i] = 0;
+              $monthValueAccountNotPaid[$creditCard->id][$i] = 0; 
               $invoice = $creditCard->invoices()->whereBetween('debit_date',[$dateInit[$i], $dateEnd[$i]])->first();
               if (isset($invoice)){
                 $value = $invoice->transactions()->sum('value');
                 $lastInvoices = $creditCard->invoices()->where('id','<',$invoice->id)->get();
                 foreach ($lastInvoices as $lastInvoice){
-                  $value+=$lastInvoice->transactions()->sum('value');
+                  $value += $lastInvoice->transactions()->sum('value');
                 }
-                if ($creditCard->closed && $creditCard->debit_date>=date()){
-                  $monthValueAccount[$creditCard->id][$i] = $value; 
+                if ($creditCard->closed && $creditCard->debit_date >= date()){
+                  $monthValueAccount[$creditCard->id][$i] += $value; 
                 } else {
-                  $monthValueAccountNotPaid[$creditCard->id][$i] = $value; 
+                  $monthValueAccountNotPaid[$creditCard->id][$i] += $value; 
                 }
-              } else {
-                $monthValueAccount[$creditCard->id][$i] = 0;
-                $monthValueAccountNotPaid[$creditCard->id][$i] = 0; 
               }
             }
             $accountsResult[] = $accountResult;
@@ -238,6 +237,5 @@ class AccountController extends Controller
         $account = \Auth::user()->accounts->where('id',$id)->first();
         $account->delete();
         return redirect('/accounts');
-
     }
 }
