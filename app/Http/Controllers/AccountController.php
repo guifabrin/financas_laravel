@@ -52,11 +52,12 @@ class AccountController extends Controller
         $monthValueAccountNotPaid = [];
         foreach($accounts as $account){
           $accountResult = new \stdClass;
-          $accountResult->invoice = false;
+          $accountResult->is_credit_card = false;
           $accountResult->id = $account->id;
           $accountResult->description = $account->description;
           $monthValueAccount[$account->id] = [];
           $monthValueAccountNotPaid[$account->id] = [];
+          $accountResult->invoices = [];
           for($i=0; $i<12; $i++) {
             $monthValueAccountNotPaid[$account->id][$i] = $account->transactions()->where('paid', false)->where('date','<=',$dateEnd[$i])->sum('value'); 
             $monthValueAccount[$account->id][$i] = $account->transactions()->where('paid', true)->where('date','<=',$dateEnd[$i] )->sum('value');
@@ -64,27 +65,21 @@ class AccountController extends Controller
           $accountsResult[] = $accountResult;
           foreach($account->creditCards() as $creditCard){
             $accountResult = new \stdClass;
-            $accountResult->invoice = true;
+            $accountResult->is_credit_card = true;
             $accountResult->id = $creditCard->id;
             $accountResult->description = $creditCard->description;
             $monthValueAccount[$creditCard->id] = [];
             $monthValueAccountNotPaid[$creditCard->id] = [];
+            $accountResult->invoices = [];
             for($i=0; $i<12; $i++) {
               $monthValueAccount[$creditCard->id][$i] = 0;
               $monthValueAccountNotPaid[$creditCard->id][$i] = 0; 
               $invoice = $creditCard->invoices()->whereBetween('debit_date',[$dateInit[$i], $dateEnd[$i]])->first();
               if (isset($invoice)){
-                $value = $invoice->transactions()->sum('value');
-                $lastInvoices = $creditCard->invoices()->where('id','<',$invoice->id)->get();
-                foreach ($lastInvoices as $lastInvoice){
-                  $value += $lastInvoice->transactions()->sum('value');
-                }
-                if ($creditCard->closed && $creditCard->debit_date >= date()){
-                  $monthValueAccount[$creditCard->id][$i] += $value; 
-                } else {
-                  $monthValueAccountNotPaid[$creditCard->id][$i] += $value; 
-                }
+                $monthValueAccount[$creditCard->id][$i] += $invoice->transactions()->where('value','>',0)->sum('value');
+                $monthValueAccountNotPaid[$creditCard->id][$i] += $invoice->transactions()->where('value','<',0)->sum('value');
               }
+              $accountResult->invoices[] = $invoice;
             }
             $accountsResult[] = $accountResult;
           }
@@ -98,7 +93,8 @@ class AccountController extends Controller
             $sumNotPaid[$i] += $monthValueAccountNotPaid[$account->id][$i];
           }
         }
-        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid]);
+        $actualMonth = date('n')-1;
+        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'actualMonth'=>$actualMonth, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid]);
     }
 
     private function getOptionsPreferDebitAccount(){

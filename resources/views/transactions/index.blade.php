@@ -63,7 +63,9 @@
                 @endif
                 <th>{{__('common.description')}}</th>
                 <th class="text-center">{{__('transactions.value')}}</th>
+                @if (!$account->is_credit_card)
                 <th class="text-center">{{__('transactions.paid')}}</th>
+                @endif
                 <th class="text-center">{{__('common.actions')}}</th>
               </tr>
             </thead>
@@ -74,7 +76,7 @@
                     {{$transaction->id}}
                   </td>
                   <td>
-                    {{format_date($transaction->date)}}
+                    {{formatDate($transaction->date)}}
                   </td>
                   @if ($account->is_credit_card)
                     <td>
@@ -88,12 +90,14 @@
                     {!!format_money($transaction->value)!!}
                   </td>
                   <td class="text-center">
-                    <div class="checkbox">
-                      <label>
-                        <input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
-                      </label>
-                    </div>
-                  </td>
+                  @if (!$account->is_credit_card)
+                   <div class="checkbox">
+                        <label>
+                          <input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
+                        </label>
+                      </div>
+                    </td>
+                  @endif
                   <td class="text-center" style="vertical-align: middle;">
                     <a title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}"><i class="fa fa-pencil"/></i></a>
                     <a title="{{__('common.remove')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm{{isset($_GET['date_init']) && isset($_GET['date_end']) ?'?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}"><i class="fa fa-trash"/></i></a>

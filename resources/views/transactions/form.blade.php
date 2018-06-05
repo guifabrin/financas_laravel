@@ -22,7 +22,7 @@
                 <div class="col-md-{{$account->is_credit_card?'6':'12'}}">
                   <div class="form-group">
                     {{ Form::label('date', __('common.date')) }}
-                    {{ Form::datetime('date', old('date', (isset($transaction)?$transaction->date:null)), ['class'=>'form-control']) }}
+                    {{ Form::input('dateTime-local', 'date', old('date', (isset($transaction)?$transaction->date:null)), ['class'=>'form-control']) }}
                   </div>
                 </div>
               @if (!$account->is_credit_card)
@@ -69,22 +69,24 @@
                     {{ Form::text('description', old('description', (isset($transaction)?$transaction->description:null)), ['class'=>'form-control']) }}
                   </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-{{$account->is_credit_card?6:4}}">
                   <div class="form-group">
                     {{ Form::label('value', __('transactions.value')) }}
                     {{ Form::number('value', old('value', (isset($transaction)?$transaction->value:null)), ['class'=>'form-control', 'step' => '0.01', 'style'=>'text-align:right;']) }}
                   </div>
                 </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    {{ Form::label('paid', __('transactions.paid')) }}
-                    <div class="checkbox">
-                      <label>
-                        {{ Form::checkbox('paid', 1, old('paid', (isset($transaction)?$transaction->paid:false))) }}
-                      </label>
+                @if (!$account->is_credit_card)
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      {{ Form::label('paid', __('transactions.paid')) }}
+                      <div class="checkbox">
+                        <label>
+                          {{ Form::checkbox('paid', 1, old('paid', (isset($transaction)?$transaction->paid:false))) }}
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
+                @endif
 
                 <div class="col-md-12">
                   <hr>

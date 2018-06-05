@@ -12918,3 +12918,11 @@ td {
   padding: 2px !important;
 }
 
+td.actual {
+  background-color: #f5f8fa;
+}
+
+th.actual {
+  background-color: #e6eff5 !important;
+}
+
