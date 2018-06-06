@@ -22,5 +22,6 @@ return [
     'search' => 'Pesquisar',
     'months'=> ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
     'create' => 'Criar',
-    'import' => 'Importar'
+    'import' => 'Importar',
+    'money_type' => 'R$'
 ];

@@ -1,0 +1,20 @@
+div.card {
+  font-size: 1em;
+  overflow: hidden;
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  border-radius: .28571429rem;
+  box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+  display: inline-block;
+  div.card-title {
+    margin: 0px;
+    font-size: 14px;
+    text-align: center;
+  }
+  div.card-body {
+    span{
+      display: block;
+    }
+  }
+}

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use App\Account;
+use App\SysConfig;
+use App\UserConfig;
 
 class AccountController extends Controller
 {
@@ -25,21 +27,41 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $accounts = \Auth::user()->accounts()->where('is_credit_card',false)->paginate(10);
-        $actualYear = isset($request->year)?$request->year:date('Y');
-        $yearDiff = (date('Y')-$actualYear);
-        $j = 10-$yearDiff;
-        if ($j<=0){
-          $j=1;
+        $user = \Auth::user();
+        $modeViewConfigId = config('constants.user_configs.mode_account_view');
+        $modeViewConfig = $user->configs()->where(['config_id'=>$modeViewConfigId])->first();
+        if (!isset($modeViewConfig)){
+          $modeViewConfig = new UserConfig;
+          $modeViewConfig->user()->associate(\Auth::user());
+          $modeViewConfig->config()->associate(SysConfig::find($modeViewConfigId));
+          $modeViewConfig->value = 'table';
+          $modeViewConfig->save();
         }
+        if (isset($request->view_mode)){
+          $modeViewConfig->value = $request->view_mode;
+          $modeViewConfig->save();
+        }
+        $modeView = $modeViewConfig->value;
         $years = [];
-        for ($i=$actualYear-$j; $i<=$actualYear; $i++){
-          $years[] = $i;
-        }
-        if ($actualYear<date('Y')){
-          for ($i=$actualYear+1; $i<=date('Y'); $i++){
+        if ($modeView == 'table'){
+          $actualYear = isset($request->year)?$request->year:date('Y');
+          $yearDiff = (date('Y')-$actualYear);
+          $j = 10-$yearDiff;
+          if ($j<=0){
+            $j=1;
+          }
+          for ($i=$actualYear-$j; $i<=$actualYear; $i++){
             $years[] = $i;
           }
+          if ($actualYear<date('Y')){
+            for ($i=$actualYear+1; $i<=date('Y'); $i++){
+              $years[] = $i;
+            }
+          }
+        } else {
+          $actualYear = date('Y');
+          $actualMonth = date('n');
+          $years[] = $actualYear;
         }
         $dateInit = [];
         $dateEnd = [];
@@ -47,6 +69,7 @@ class AccountController extends Controller
           $dateInit[$i] = date("Y-m-d", strtotime(date($actualYear.'-'.($i+1).'-1')));
           $dateEnd[$i] = date('Y-m-t', strtotime($dateInit[$i]));
         }
+        $accounts = $user->accounts()->where('is_credit_card',false)->paginate(10);
         $accountsResult = [];
         $monthValueAccount = [];
         $monthValueAccountNotPaid = [];
@@ -85,7 +108,11 @@ class AccountController extends Controller
           }
         }
         $sumPaid = [];
+        $sumNotPaid = [];
         for($i=0; $i<12; $i++) {
+          if (!isset($dateInit[$i])){
+            continue;
+          }
           $sumPaid[$i] = 0;
           $sumNotPaid[$i] = 0;
           foreach ($accountsResult as $account) {
@@ -94,7 +121,7 @@ class AccountController extends Controller
           }
         }
         $actualMonth = date('n')-1;
-        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'actualMonth'=>$actualMonth, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid]);
+        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'actualMonth'=>$actualMonth, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid, 'modeView' => $modeView]);
     }
 
     private function getOptionsPreferDebitAccount(){
