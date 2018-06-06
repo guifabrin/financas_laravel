@@ -110,9 +110,6 @@ class AccountController extends Controller
         $sumPaid = [];
         $sumNotPaid = [];
         for($i=0; $i<12; $i++) {
-          if (!isset($dateInit[$i])){
-            continue;
-          }
           $sumPaid[$i] = 0;
           $sumNotPaid[$i] = 0;
           foreach ($accountsResult as $account) {
