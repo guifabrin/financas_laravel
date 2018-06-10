@@ -8,6 +8,7 @@ use Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\UploadOfxRequest;
+use App\Http\Requests\UploadCsvRequest;
 
 class TransactionController extends Controller
 {
@@ -30,8 +31,8 @@ class TransactionController extends Controller
     {
       $date_init = $request->input('date_init');
       $date_end = $request->input('date_end');
-      if (isset($request->invoice)){
-        $invoice = $request->account->invoices()->whereBetween('debit_date',[$date_init, $date_end])->first();
+      if (isset($request->invoice_id)){
+        $invoice = $request->account->invoices()->where('id',$request->invoice_id)->first();
         if (isset($invoice)){
           $transactions = $invoice->transactions()->orderBy('date')->orderBy('description');
         } else {
@@ -108,7 +109,7 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
       $this->valid($request);
-      $invoice_id = null;
+      $invoiceId = null;
       if ($request->invoice_id==-1){
           $invoice = new Invoice;
           $invoice->account()->associate($request->account);
@@ -117,9 +118,9 @@ class TransactionController extends Controller
           $invoice->date_end = $request->invoice_date_end;
           $invoice->debit_date = $request->invoice_debit_date;
           $invoice->save();
-          $invoice_id = $invoice->id;
+          $invoiceId = $invoice->id;
       } else if ($request->invoice_id!=null){
-          $invoice_id = $request->invoice_id;    
+          $invoiceId = $request->invoice_id;    
       }
       $transaction = new Transaction;
       $transaction->account()->associate($request->account);
@@ -127,7 +128,7 @@ class TransactionController extends Controller
       $transaction->description =$request->description;
       $transaction->value = $request->value;
       $transaction->paid = isset($request->paid)?$request->paid:false;
-      $transaction->invoice_id = $invoice_id;
+      $transaction->invoice_id = $invoiceId;
       $transaction->save();
       return redirect('/account/'.$request->account->id.'/transactions/'. ((isset($_GET) && isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : ''));    
     }
@@ -166,7 +167,7 @@ class TransactionController extends Controller
       $this->valid($request);
       $date_query = (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '';
       $paid = isset($request->paid)?$request->paid:false;
-      $invoice_id = null;
+      $invoiceId = null;
       if ($request->invoice_id==-1){
           $invoice = new Invoice;
           $invoice->account()->associate($request->account);
@@ -175,15 +176,15 @@ class TransactionController extends Controller
           $invoice->date_end = $request->invoice_date_end;
           $invoice->debit_date = $request->invoice_debit_date;
           $invoice->save();
-          $invoice_id = $invoice->id;
+          $invoiceId = $invoice->id;
       } else if ($request->invoice_id!=null){
-          $invoice_id = $request->invoice_id;    
+          $invoiceId = $request->invoice_id;    
       }
       $request->transaction->date = $request->date;
       $request->transaction->description =$request->description;
       $request->transaction->value = $request->value;
       $request->transaction->paid = $paid;
-      $request->transaction->invoice_id = $invoice_id;
+      $request->transaction->invoice_id = $invoiceId;
       $request->transaction->save();
       $request->account->save();
       return redirect('/account/'.$request->account->id.'/transactions'.$date_query);
@@ -238,6 +239,12 @@ class TransactionController extends Controller
 
     public function uploadOfx(UploadOfxRequest $request)
     {
+      $accountId = $request->accountId;
+      if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+          return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+      }
+      $invoiceId = $request->invoiceId;
+      $invoice = $account->invoices->where('id', $invoiceId)->first();
       foreach ($request->file('ofx-file') as $file) {
         $xmlstr = $this->getOfxAsXML($file);
         $ofxParser = new \OfxParser\Parser();
@@ -246,31 +253,111 @@ class TransactionController extends Controller
         $bankAccount = reset($ofx->bankAccounts);
         $startDate = $bankAccount->statement->startDate;
         $endDate = $bankAccount->statement->endDate;
-        $invoice_id = null;
-        if ($request->account->is_credit_card){
+        $invoiceId = null;
+        if (!isset($invoiceId) && $account->is_credit_card){
             $invoice = new Invoice;
-            $invoice->account()->associate($request->account);
+            $invoice->account()->associate($account);
             $invoice->description = "Invoice ".$file->getClientOriginalName();
-            $invoice->date_init = $startDate;
-            $invoice->date_end = $endDate;
+            $invoice->date_init = date("Y-m-d\TH:i:s", $startDate->getTimestamp());
+            $invoice->date_end = date("Y-m-d\TH:i:s", $endDate->getTimestamp());
             $invoice->debit_date = new \DateTime();
             $invoice->save();
-            $invoice_id = $invoice->id; 
+            $invoiceId = $invoice->id; 
         }
         $transactions = $bankAccount->statement->transactions;
         foreach($transactions as $ofxTransaction){
           $transaction = new Transaction;
-          $transaction->date = $ofxTransaction->date;
+          $transaction->date = date("Y-m-d\TH:i:s", $ofxTransaction->date->getTimestamp());
           $transaction->description = $ofxTransaction->memo;
           $transaction->value = $ofxTransaction->amount;
           $transaction->paid = true;
-          $transaction->account_id = $request->account->id;
-          if ($request->account->is_credit_card){
-            $transaction->invoice_id = $invoice_id;
+          $transaction->account_id = $account->id;
+          if ($account->is_credit_card){
+            $transaction->invoice_id = $invoiceId;
           }
           $transaction->save();
         }
       }
       return redirect('/accounts/');
     }
+
+    private function csvToArray($filename = '', $delimiter = ',')
+    {
+      if (!file_exists($filename) || !is_readable($filename))
+        return false;
+      $header = null;
+      $data = array();
+      if (($handle = fopen($filename, 'r')) !== false)
+      {
+        while (($row = fgetcsv($handle, 1000, $delimiter)) !== false)
+        {
+          if (!$header)
+            $header = $row;
+          else
+            $data[] = array_combine($header, $row);
+        }
+        fclose($handle);
+      }
+      return $data;
+    }
+
+    public function uploadCsv(UploadCsvRequest $request)
+    {
+      $accountId = $request->accountId;
+      if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
+          return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+      }
+      $invoiceId = $request->invoiceId;
+      $invoice = $account->invoices->where('id', $invoiceId)->first();
+
+      foreach ($request->file('csv-file') as $file) {
+        $csvData = $this->csvToArray($file);
+        $invoiceId = isset($invoice) ? $invoice->id : null;
+        if (!isset($invoiceId) && $account->is_credit_card){
+            $invoice = new Invoice;
+            $invoice->account()->associate($account);
+            $invoice->description = "Invoice ".$file->getClientOriginalName();
+            $invoice->date_init = date("Y-m-d\TH:i:s", strtotime($csvData[0]["date"]));
+            $invoice->date_end = date("Y-m-d\TH:i:s", strtotime($csvData[count($csvData)-1]["date"]));
+            $invoice->debit_date = new \DateTime();
+            $invoice->save();
+            $invoiceId = $invoice->id; 
+        }
+        foreach($csvData as $csvTransaction){
+          $transaction = new Transaction;
+          $transaction->date = date("Y-m-d\TH:i:s", strtotime($csvTransaction["date"]));
+          $transaction->description = $csvTransaction["description"];
+          $transaction->value = $csvTransaction["value"]*1;
+          $transaction->paid = true;
+          $transaction->account_id = $account->id;
+          if ($account->is_credit_card){
+            $transaction->invoice_id = $invoiceId;
+          }
+          $transaction->save();
+        }
+      }
+      return redirect('/accounts/');
+    }
+
+    public function repeat(Request $request){
+      return view('transactions.repeat', ['account' => $request->account, 'transaction' => $request->transaction]);
+    }
+
+    public function confirmRepeat(Request $request){
+      $request->account->save();$date_query = (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '';
+      for ($i=0; $i<$request->times; $i++){
+        $transaction = new Transaction;
+        $transaction->date = date("Y-m-d\TH:i:s", strtotime("+".($i+1)." month", strtotime($request->transaction->date)));
+        $transaction->description = $request->transaction->description;
+        $transaction->value = $request->transaction->value;
+        $transaction->paid = false;
+        $transaction->account_id = $request->account->id;
+        if ($request->account->is_credit_card){
+          $transaction->invoice_id = $request->transaction->invoice_id;
+        }
+        $transaction->save();
+      }
+      return redirect('/account/'.$request->account->id.'/transactions'.$date_query);
+    }
+
 }

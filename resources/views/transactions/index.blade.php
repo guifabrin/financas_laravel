@@ -93,13 +93,16 @@
           @if (!$account->is_credit_card)
             <td class="text-center">
              <div class="checkbox">
-                <label>
-                  <input disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
+                <label style="margin-bottom: 0px;">
+                  <input style="vertical-align: middle;" disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
                 </label>
               </div>
             </td>
           @endif
           <td class="text-center">
+            <a class="btn btn-secondary" title="{{__('common.repeat')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/repeat{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">
+              <i class="fas fa-redo-alt"/></i>
+            </a>
             <a class="btn btn-secondary" title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">
               <i class="fa fa-edit"/></i>
             </a>

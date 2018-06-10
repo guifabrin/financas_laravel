@@ -14,7 +14,7 @@
   @include('accounts/mode_view/'.$modeView)
 
   @foreach($accounts as $account)
-    @include('accounts/import', ['account'=>$account])
+    @include('accounts/import', ['isAccount'=>true, 'id'=>$account->id])
   @endforeach
 @endsection
 

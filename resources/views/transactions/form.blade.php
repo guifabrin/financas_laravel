@@ -79,7 +79,7 @@
             <div class="form-group">
               {{ Form::label('paid', __('transactions.paid')) }}
               <div class="checkbox">
-                <label>
+                <labels>
                   {{ Form::checkbox('paid', 1, old('paid', (isset($transaction)?$transaction->paid:false))) }}
                 </label>
               </div>

@@ -26,7 +26,8 @@ Route::group(['middleware' => ['account']], function () {
   Route::get('account/{accountId}/transactions', 'TransactionController@index');
   Route::get('account/{accountId}/transaction/create', 'TransactionController@create');
   Route::post('account/{accountId}/transaction', 'TransactionController@store');
-  Route::post('account/{accountId}/uploadOfx', 'TransactionController@uploadOfx');
+  Route::post('account/uploadOfx', 'TransactionController@uploadOfx');
+  Route::post('account/uploadCsv', 'TransactionController@uploadCsv');
   
   Route::get('account/{accountId}/invoices', 'InvoiceController@index');
   Route::get('account/{accountId}/invoice/create', 'InvoiceController@create');
@@ -37,12 +38,15 @@ Route::group(['middleware' => ['account', 'transaction']], function () {
   Route::get('account/{accountId}/transaction/{transactionId}/confirm', 'TransactionController@confirm');
   Route::put('account/{accountId}/transaction/{transactionId}', 'TransactionController@update');
   Route::delete('account/{accountId}/transaction/{transactionId}', 'TransactionController@destroy');
+  Route::get('account/{accountId}/transaction/{transactionId}/repeat', 'TransactionController@repeat');
+  Route::post('account/{accountId}/transaction/{transactionId}/confirmRepeat', 'TransactionController@confirmRepeat');
 });
 Route::group(['middleware' => ['account', 'invoice']], function () {
   Route::get('account/{accountId}/invoice/{invoiceId}/edit', 'InvoiceController@edit');
   Route::get('account/{accountId}/invoice/{invoiceId}/confirm', 'InvoiceController@confirm');
   Route::put('account/{accountId}/invoice/{invoiceId}', 'InvoiceController@update');
   Route::delete('account/{accountId}/invoice/{invoiceId}', 'InvoiceController@destroy');
+  Route::post('account/invoice/uploadCsv', 'TransactionController@uploadCsv');
 });
 Auth::routes();
 

@@ -34,6 +34,9 @@
         <td>{{formatDateTime($invoice->date_end)}}</td>
         <td>{{formatDateTime($invoice->debit_date)}}</td>
         <td>
+          <a class="btn btn-secondary" title="{{__('common.import')}} {{__('accounts.account')}}" href="#" data-toggle="modal" data-target="#model_account_{{$invoice->id}}">
+            <i class="fa fa-upload"/></i>
+          </a>
            <a class="btn btn-secondary" title="{{__('common.edit')}} {{__('invoices.invoice')}}" href="/account/{{$account->id}}/invoice/{{$invoice->id}}/edit">
             <i class="fa fa-edit"/></i>
           </a>
@@ -45,4 +48,7 @@
     @endforeach
   </tbody>
 </table>
+@foreach($invoices as $invoice)
+  @include('accounts/import', ['isAccount'=>false, 'accountId'=>$account->id,'id'=>$invoice->id])
+@endforeach
 @endsection

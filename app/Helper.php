@@ -1,7 +1,7 @@
 <?php
 
 function format_money($value){
-  return "<font color='".($value<0?'red':'green')."'>".number_format($value, 2 , __('config.decimal_point'), __('config.thousand_point'))."</font>";
+  return "<font class='".($value<0?'negative':'positive')."'>".number_format($value, 2 , __('config.decimal_point'), __('config.thousand_point'))."</font>";
 }
 
 function formatDate($date){

@@ -110,6 +110,7 @@ class InvoiceController extends Controller
    */
   public function destroy(Request $request)
   {
+    $request->invoice->transactions()->delete();
     $request->invoice->delete();
     return redirect('/account/'.$request->account->id.'/invoices');
   }

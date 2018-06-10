@@ -11,5 +11,6 @@
     'register' => 'Registrar',
     'reset_password' => 'Recuperar senha',
     'send_email_reset' => 'Enviar email',
-    'logout' => 'Sair'
+    'logout' => 'Sair',
+    'social' => 'Entrar com uma rede social'
   ];  

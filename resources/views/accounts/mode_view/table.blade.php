@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
   @foreach ($years as $year)
-    <li class="nav-item">
+    <li class="nav-item primary-color">
       <a class="nav-link {{$actualYear==$year?'active':''}}" href="/accounts?year={{$year}}">{{$year}}</a>
     </li>
   @endforeach
@@ -41,7 +41,7 @@
           @if ($account->is_credit_card)
             <td class="active " rowspan="3">
               <a class="btn btn-secondary" title="{{__('invoices.title')}} {{__('accounts.account')}}" href="/account/{{$account->id}}/invoices">
-                <i class="fa fa-list"/></i>
+                <i class="fas fa-receipt"/></i>
               </a>
             </td>
           @endif
