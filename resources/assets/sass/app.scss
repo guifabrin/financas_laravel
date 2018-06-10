@@ -1,16 +1,49 @@
-
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
-// Variables
-@import "variables";
-@import "invoices";
-
 // Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
-@import "~font-awesome/css/font-awesome";
-@import "~bootstrap-social/bootstrap-social";
+@import "./bootstrap.min.css";
 
-td{
-	padding: 2px !important;
+//Font awesome
+@import url("https://use.fontawesome.com/releases/v5.0.13/css/all.css");
+table.table{
+  td{
+  	padding: 2px !important;
+    vertical-align: middle;
+    text-align: center;
+    &.actual{
+      background-color: #f5f8fa;
+    }
+  }
+
+  th.actual{
+    background-color: #e6eff5 !important
+  }
+}
+
+div.title{
+  padding: 10px;
+  h2{
+    font-size: 16px;
+  }
+  .col-md-2 {
+    text-align: right;
+  }
+}
+
+.btn-facebook{
+  background-color: #3b5998;
+  &:hover{
+    background-color: rgb(50, 76, 130);
+  }
+}
+
+div.card{
+  margin-bottom: 10px;
+  .card-title{
+    font-size: 14px;
+  } 
+  .card-footer{
+    text-align: center;
+   }
 }
