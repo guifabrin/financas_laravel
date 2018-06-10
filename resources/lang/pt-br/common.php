@@ -23,5 +23,6 @@ return [
     'months'=> ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
     'create' => 'Criar',
     'import' => 'Importar',
-    'money_type' => 'R$'
+    'money_type' => 'R$',
+    'view_mode' => 'Modo de visualização'
 ];

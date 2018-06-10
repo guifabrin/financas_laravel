@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('/home');
 });
 
 Auth::routes();
@@ -44,3 +44,7 @@ Route::group(['middleware' => ['account', 'invoice']], function () {
   Route::put('account/{accountId}/invoice/{invoiceId}', 'InvoiceController@update');
   Route::delete('account/{accountId}/invoice/{invoiceId}', 'InvoiceController@destroy');
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+

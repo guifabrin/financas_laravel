@@ -10,7 +10,8 @@ return [
     'confirmation_text' => 'Tem certeza que deseja remover a conta :id/:description?',
     'amount' => 'Saldo',
     'end_month_amount' => 'Saldo fim do mês',
-    'totals' => 'Total final:',
-    'totals_paid' => 'Total pago:',
-    'totals_not_paid' => 'Total não pago:'
+    'totals' => 'Total final',
+    'totals_paid' => 'Total pago',
+    'totals_not_paid' => 'Total não pago',
+    'balance' => 'Saldo'
 ];

@@ -1,38 +1,21 @@
 @extends('layouts.app')
-
+@section('title')
+  {{__('accounts.title')}}
+@endsection
+@section('title-buttons')
+  <a class="btn btn-secondary" title="{{__('common.view_mode')}}" href="/accounts?view_mode={{$modeView=='table'?'card':'table'}}">
+    <i class="fas fa-exchange-alt"></i>
+  </a>
+  <a class="btn btn-secondary" title="{{__('common.add')}}" href="/accounts/create">
+    <i class="fa fa-plus"></i>
+  </a>
+@endsection
 @section('content')
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <div class="container-fluid">
-            <div class="col-md-11">
-              {{__('accounts.title')}}
-            </div>
-            <div class="col-md-1 text-right">
-              <a title="{{__('common.view_mode')}}" href="/accounts?view_mode={{$modeView=='table'?'card':'table'}}"><i class="fa fa-list"></i></a>
-              <a title="{{__('common.add')}}" href="/accounts/create"><i class="fa fa-plus"></i></a>
-            </div>
-          </div>
-        </div>
+  @include('accounts/mode_view/'.$modeView)
 
-        <div class="panel-body">
-          @if (session('status'))
-            <div class="alert alert-success">
-                {{ session('status') }}
-            </div>
-          @endif
-          @include('accounts/mode_view/'.$modeView)
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-@foreach($accounts as $account)
-  @include('accounts/import', ['account'=>$account])
-@endforeach
+  @foreach($accounts as $account)
+    @include('accounts/import', ['account'=>$account])
+  @endforeach
 @endsection
 
 @section('script')
