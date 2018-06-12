@@ -20,4 +20,9 @@ class Transaction extends Model
   {
       return $this->belongsTo('App\Invoice', 'invoice_id');
   }
+
+  public function categories()
+  {
+      return $this->hasMany('App\CategoryTransaction','transaction_id');
+  }
 }

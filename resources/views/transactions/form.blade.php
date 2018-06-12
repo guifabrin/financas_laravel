@@ -88,6 +88,15 @@
         @endif
 
         <div class="col-md-12">
+          <div class="form-group">
+            {{ Form::label('categories', __('common.categories')) }}
+            {{ Form::text('categories', old('categories', (isset($transaction) ? $transaction->categories->map(function ($categoryTransaction) {
+                return $categoryTransaction->category->description;
+              })->implode(',') : null )), ['class'=>'form-control', 'data-role'=>'tagsinput']) }}
+          </div>
+        </div>
+
+        <div class="col-md-12">
           <hr>
           @include('shared.submit')
         </div>

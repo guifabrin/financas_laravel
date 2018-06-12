@@ -8,22 +8,36 @@
   <a class="btn btn-secondary" href="/accounts">
     <i class="fa fa-arrow-left"></i>
   </a>
-  <a class="btn btn-secondary" title="{{__('common.add')}}" href="/account/{{$account->id}}/transaction/create">
-    <i class="fa fa-plus"></i>
-  </a>
+  @if (isset($account))
+    <a class="btn btn-secondary" title="{{__('common.add')}}" href="/account/{{$account->id}}/transaction/create">
+      <i class="fa fa-plus"></i>
+    </a>
+  @endif
 @endsection
 
 @section('content')
-  {{ Form::open(['url' => '/account/'.$account->id.'/transactions/', 'method'=>'GET', 'class'=>'form-inline']) }}
+  <?php
+  $query = (isset($_GET['description']) ?'description='.$_GET['description'] : '').'&'.((isset($_GET['date_init']) && isset($_GET['date_end'])) ? 'date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '');
+  ?>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+          {{ Form::label('description', __('common.description')) }}
+          {{ Form::text('description', old('description'), ['class'=>'form-control', 'style'=>'width:100%;']) }}
+        </div>
+    </div>
+  </div>
+  {{ Form::open(['url' => (isset($account) ? '/account/'. $account->id : '' ) . '/transactions/', 'method'=>'GET', 'class'=>'form-inline']) }}
+    {{ Form::hidden('description', old('description')) }}
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-5">
           {{ Form::label('date_init', __('common.date_init')) }}
-          {{ Form::date('date_init', old('date_init', date('Y-m-01')), ['class'=>'form-control', 'style'=>'width:100%;']) }}
+          {{ Form::date('date_init', old('date_init'), ['class'=>'form-control', 'style'=>'width:100%;']) }}
         </div>
         <div class="col-md-5">
           {{ Form::label('date_end', __('common.date_end')) }}
-          {{ Form::date('date_end', old('date_end', date('Y-m-t')), ['class'=>'form-control', 'style'=>'width:100%;']) }}
+          {{ Form::date('date_end', old('date_end'), ['class'=>'form-control', 'style'=>'width:100%;']) }}
         </div>
         <div class="col-md-2" style='text-align: center;'>
           {{ Form::label('search', __('common.search')) }}
@@ -34,9 +48,10 @@
       </div>
     </div>
   {{ Form::close() }}
-  @if ($account->is_credit_card)
+  @if (isset($account) && $account->is_credit_card)
     <hr>
     {{ Form::open(['url' => '/account/'.$account->id.'/transactions/', 'method'=>'GET', 'class'=>'form-inline']) }}
+      {{ Form::hidden('description', old('description')) }}
       <div class="container-fluid" style='margin-bottom:20px;'>
         <div class="row">
           <div class="col-md-10">
@@ -59,14 +74,11 @@
       <tr>
         <th>{{__('common.id')}}</th>
         <th>{{__('common.date')}}</th>
-        @if ($account->is_credit_card)
-          <th>{{__('transactions.invoice')}}</th>
-        @endif
+        <th>{{__('transactions.invoice')}}</th>
         <th>{{__('common.description')}}</th>
+        <th>{{__('common.categories')}}</th>
         <th class="text-center">{{__('transactions.value')}}</th>
-        @if (!$account->is_credit_card)
         <th class="text-center">{{__('transactions.paid')}}</th>
-        @endif
         <th class="text-center">{{__('common.actions')}}</th>
       </tr>
     </thead>
@@ -79,39 +91,75 @@
           <td>
             {{formatDate($transaction->date)}}
           </td>
-          @if ($account->is_credit_card)
-            <td>
+          <td>
+            @if ($transaction->account->is_credit_card)
               {{$transaction->invoice != null ? $transaction->invoice->description : '' }}
-            </td>
-          @endif
+            @endif
+          </td>
           <td>
             {{$transaction->description}}
+          </td>
+          <td>
+            @if (count($transaction->categories)>0)
+              <div class="bootstrap-tagsinput">
+                @foreach ($transaction->categories as $category)
+                  <span class="badge badge badge-info">{{$category->category->description}}</span>
+                @endforeach
+              </div>
+            @endif
           </td>
           <td class="text-right">
             {!!format_money($transaction->value)!!}
           </td>
-          @if (!$account->is_credit_card)
-            <td class="text-center">
+          <td class="text-center">
+            @if (!$transaction->account->is_credit_card)
              <div class="checkbox">
                 <label style="margin-bottom: 0px;">
                   <input style="vertical-align: middle;" disabled="true" type="checkbox" {{$transaction->paid?"checked='true'":""}}/>
                 </label>
               </div>
-            </td>
-          @endif
+            @endif
+          </td>
           <td class="text-center">
-            <a class="btn btn-secondary" title="{{__('common.repeat')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/repeat{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">
+            <a class="btn btn-secondary" title="{{__('common.repeat')}} {{__('transactions.transaction')}}" href="/account/{{$transaction->account_id}}/transaction/{{$transaction->id}}/repeat?{{ $query }}">
               <i class="fas fa-redo-alt"/></i>
             </a>
-            <a class="btn btn-secondary" title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/edit{{ (isset($_GET['date_init']) && isset($_GET['date_end'])) ? '?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">
+            <a class="btn btn-secondary" title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="/account/{{$transaction->account_id}}/transaction/{{$transaction->id}}/edit?{{ $query }}">
               <i class="fa fa-edit"/></i>
             </a>
-            <a class="btn btn-secondary" title="{{__('common.remove')}} {{__('transactions.transaction')}}" href="/account/{{$account->id}}/transaction/{{$transaction->id}}/confirm{{isset($_GET['date_init']) && isset($_GET['date_end']) ?'?date_init='.$_GET['date_init'].'&date_end='.$_GET['date_end'] : '' }}">
+            <a class="btn btn-secondary" title="{{__('common.remove')}} {{__('transactions.transaction')}}" href="/account/{{$transaction->account_id}}/transaction/{{$transaction->id}}/confirm?{{ $query }}">
               <i class="fa fa-trash"/></i>
             </a>
           </td>
         </tr>
       @endforeach
     </tbody>
+    <tfoot>
+      <tr>
+        <td colspan=8 >
+          {{$transactions->links('vendor.pagination.bootstrap-4')}}
+        </td>
+      </tr>
+      <tr>
+        <td colspan=8 >
+          {{ Form::open(['url' => (isset($account) ? '/account/'. $account->id : '' ) . '/transactions/addCategories?'.$query, 'method'=>'PUT', 'class'=>'form-inline']) }}
+            <div class="col-md-11">
+              {{ Form::text('categories', old('categories', ''), ['class'=>'form-control', 'data-role'=>'tagsinput']) }}
+            </div>
+            <div class="col-md-1">
+              @include('shared.submit')
+            </div>
+          {{ Form::close() }}
+        </td>
+      </tr>
+    </tfoot>
   </table>
+@endsection
+
+@section('script')
+<script>
+  $('input[type=text][name=description]').bind("keyup", function(){
+    $('input[type=hidden][name=description]').val(this.value);
+  });
+</script>
 @endsection
