@@ -21,6 +21,8 @@ Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCall
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('accounts', 'AccountController');
+Route::get('/transactions', 'TransactionController@index');
+Route::put('/transactions/addCategories', 'TransactionController@addCategories');
 Route::get('/accounts/{id}/confirm', 'AccountController@confirm');
 Route::group(['middleware' => ['account']], function () {
   Route::get('account/{accountId}/transactions', 'TransactionController@index');
@@ -32,6 +34,7 @@ Route::group(['middleware' => ['account']], function () {
   Route::get('account/{accountId}/invoices', 'InvoiceController@index');
   Route::get('account/{accountId}/invoice/create', 'InvoiceController@create');
   Route::post('account/{accountId}/invoice', 'InvoiceController@store');
+  Route::put('account/{accountId}/transactions/addCategories', 'TransactionController@addCategory');
 });
 Route::group(['middleware' => ['account', 'transaction']], function () {
   Route::get('account/{accountId}/transaction/{transactionId}/edit', 'TransactionController@edit');

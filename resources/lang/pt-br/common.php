@@ -25,5 +25,6 @@ return [
     'import' => 'Importar',
     'money_type' => 'R$',
     'view_mode' => 'Modo de visualização',
-    'repeat' => 'Repetir'
+    'repeat' => 'Repetir',
+    'categories' => 'Categorias'
 ];
