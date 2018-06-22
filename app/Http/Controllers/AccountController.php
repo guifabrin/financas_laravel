@@ -122,12 +122,21 @@ class AccountController extends Controller
         $avgMax = Transaction::whereIn('account_id', \Auth::user()->accounts->map(function ($account) {
           return $account->id;
         }))->where('value', '>', 0);
-
-        $avgMax = $avgMax->sum('value') / count($avgMax->get());
+        $avgMaxDivision = count($avgMax->get());
+        if ($avgMaxDivision==0)
+        {
+          $avgMaxDivision = 1;
+        }
+        $avgMax = $avgMax->sum('value') / $avgMaxDivision;
         $avgMin = Transaction::whereIn('account_id', \Auth::user()->accounts->map(function ($account) {
           return $account->id;
         }))->where('value', '<', 0);
-        $avgMin = $avgMin->sum('value') / count($avgMin->get());
+        $avgMinDivision = count($avgMin->get());
+        if ($avgMinDivision==0)
+        {
+          $avgMinDivision = 1;
+        }
+        $avgMin = $avgMin->sum('value') / $avgMinDivision;
         
         return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'actualMonth'=>$actualMonth, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid, 'modeView' => $modeView, 'avgMax' => $avgMax, 'avgMin'=>$avgMin,'avgAvg'=>$avgMax+$avgMin]);
     }
