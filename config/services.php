@@ -36,9 +36,9 @@ return [
     ],
 
     'facebook' => [
-       'client_id' => env('FACEBOOK_CLIENT_ID'),         // Your GitHub Client ID
-        'client_secret' => env('FACEBOOK_CLIENT_SECRET'), // Your GitHub Client Secret
-        'redirect' => 'http://localhost:8000/login/facebook/callback',
+       'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => 'http://ec2-18-219-2-27.us-east-2.compute.amazonaws.com/login/facebook/callback',
     ],
 
 ];
