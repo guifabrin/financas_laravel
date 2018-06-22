@@ -22,6 +22,7 @@ Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCall
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('accounts', 'AccountController');
 Route::get('/transactions', 'TransactionController@index');
+Route::get('/transactions/charts', 'TransactionController@charts');
 Route::put('/transactions/addCategories', 'TransactionController@addCategories');
 Route::get('/accounts/{id}/confirm', 'AccountController@confirm');
 Route::group(['middleware' => ['account']], function () {

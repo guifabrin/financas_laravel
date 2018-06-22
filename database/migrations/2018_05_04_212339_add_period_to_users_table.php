@@ -14,9 +14,9 @@ class AddPeriodToUsersTable extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->date('date_init')->default('');
-            $table->date('date_end')->default('');
-            $table->date('debit_date')->default('');
+            $table->date('date_init')->default(null);
+            $table->date('date_end')->default(null);
+            $table->date('debit_date')->default(null);
             $table->boolean('closed')->default(false);
         });
     }

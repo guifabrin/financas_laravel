@@ -21,6 +21,12 @@
             <a href="/accounts" class="dropdown-item">
               {{__('accounts.title')}}
             </a>
+            <a href="/transactions" class="dropdown-item">
+              {{__('transactions.title')}}
+            </a>
+            <a href="/transactions/charts" class="dropdown-item">
+              {{__('transactions.charts')}}
+            </a>
             <a href="{{ route('logout') }}" class="dropdown-item"
                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
               {{__('login.logout')}}

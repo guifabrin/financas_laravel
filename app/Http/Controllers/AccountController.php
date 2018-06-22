@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Account;
 use App\SysConfig;
 use App\UserConfig;
+use App\Transaction;
 
 class AccountController extends Controller
 {
@@ -106,7 +107,7 @@ class AccountController extends Controller
             }
             $accountsResult[] = $accountResult;
           }
-        }
+        } 
         $sumPaid = [];
         $sumNotPaid = [];
         for($i=0; $i<12; $i++) {
@@ -118,7 +119,17 @@ class AccountController extends Controller
           }
         }
         $actualMonth = date('n')-1;
-        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'actualMonth'=>$actualMonth, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid, 'modeView' => $modeView]);
+        $avgMax = Transaction::whereIn('account_id', \Auth::user()->accounts->map(function ($account) {
+          return $account->id;
+        }))->where('value', '>', 0);
+
+        $avgMax = $avgMax->sum('value') / count($avgMax->get());
+        $avgMin = Transaction::whereIn('account_id', \Auth::user()->accounts->map(function ($account) {
+          return $account->id;
+        }))->where('value', '<', 0);
+        $avgMin = $avgMin->sum('value') / count($avgMin->get());
+        
+        return view('accounts.index', ['accounts' => $accountsResult, 'years'=>$years, 'actualYear'=>$actualYear, 'actualMonth'=>$actualMonth, 'dateInit'=>$dateInit, 'dateEnd'=>$dateEnd, 'monthValueAccount'=>$monthValueAccount, 'monthValueAccountNotPaid'=>$monthValueAccountNotPaid, 'sumPaid'=>$sumPaid, 'sumNotPaid'=>$sumNotPaid, 'modeView' => $modeView, 'avgMax' => $avgMax, 'avgMin'=>$avgMin,'avgAvg'=>$avgMax+$avgMin]);
     }
 
     private function getOptionsPreferDebitAccount(){

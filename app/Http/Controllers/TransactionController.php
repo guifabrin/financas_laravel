@@ -75,6 +75,24 @@ class TransactionController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function charts(Request $request)
+    {
+      $transactions = $this->getEloquentTransactions($request)->get();
+      $categories = \Auth::user()->categories;
+      $category_transactions = [];
+      $transactions->each(function ($transaction) use (&$category_transactions){
+        $transaction->categories->each(function ($category) use (&$category_transactions){
+          $category_transactions[] = $category;
+        });
+      });
+      return view('transactions.charts', ['account' => $request->account, 'transactions' => $transactions, 'categories'=>$categories, 'category_transactions'=>$category_transactions]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -149,7 +167,7 @@ class TransactionController extends Controller
       $transaction->paid = isset($request->paid)?$request->paid:false;
       $transaction->invoice_id = $invoiceId;
       $transaction->save();
-       foreach($request->transaction->categories as $categoryTransaction){
+       foreach($transaction->categories as $categoryTransaction){
         $categoryTransaction->delete();
       }
       $categoriesString = explode(',', $request->categories);
@@ -166,7 +184,7 @@ class TransactionController extends Controller
         $categoryTransaction->transaction()->associate($transaction->id);
         $categoryTransaction->save();
       }
-      return redirect('/account/'.$request->account->id.'/transactions/'. $this->getQuery());    
+      return redirect('/account/'.$request->account->id.'/transactions?'. $this->getQuery());    
     }
 
     /**
@@ -361,7 +379,7 @@ class TransactionController extends Controller
       }
       $invoiceId = $request->invoiceId;
       $invoice = $account->invoices->where('id', $invoiceId)->first();
-
+      $clearInvoice = false;
       foreach ($request->file('csv-file') as $file) {
         $csvData = $this->csvToArray($file);
         $invoiceId = isset($invoice) ? $invoice->id : null;
@@ -373,7 +391,8 @@ class TransactionController extends Controller
           $invoice->date_end = date("Y-m-d\TH:i:s", strtotime($csvData[count($csvData)-1]["date"]));
           $invoice->debit_date = new \DateTime();
           $invoice->save();
-          $invoiceId = $invoice->id; 
+          $invoiceId = $invoice->id;
+          $clearInvoice = true;
         }
         foreach($csvData as $csvTransaction){
           $transaction = new Transaction;
@@ -386,6 +405,9 @@ class TransactionController extends Controller
             $transaction->invoice_id = $invoiceId;
           }
           $transaction->save();
+        }
+        if ($clearInvoice){
+          $invoice = null;
         }
       }
       return redirect('/accounts/');

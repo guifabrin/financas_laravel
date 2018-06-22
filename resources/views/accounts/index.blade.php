@@ -1,6 +1,24 @@
 @extends('layouts.app')
 @section('title')
-  {{__('accounts.title')}}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-9">
+        {{__('accounts.title')}}      
+      </div>
+      <div class="col-md-1">
+        <label style="font-size: 10px;">{{__('accounts.avg_max')}}</label>
+        {!!format_money($avgMax)!!}
+      </div>
+      <div class="col-md-1">
+        <label style="font-size: 10px;">{{__('accounts.avg_min')}}</label>
+        {!!format_money($avgMin)!!}
+      </div>
+      <div class="col-md-1">
+        <label style="font-size: 10px;">{{__('accounts.avg_avg')}}</label>
+        {!!format_money($avgAvg)!!}
+      </div>
+    </div>
+  </div>
 @endsection
 @section('title-buttons')
   <a class="btn btn-secondary" title="{{__('common.view_mode')}}" href="/accounts?view_mode={{$modeView=='table'?'card':'table'}}">

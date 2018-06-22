@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'FinancasLaravel'),
+    'name' => env('APP_NAME', 'Dracma'),
 
     /*
     |--------------------------------------------------------------------------

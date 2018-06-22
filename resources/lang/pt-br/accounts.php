@@ -13,5 +13,8 @@ return [
     'totals' => 'Total final',
     'totals_paid' => 'Total pago',
     'totals_not_paid' => 'Total não pago',
-    'balance' => 'Saldo'
+    'balance' => 'Saldo',
+    'avg_max' => 'Méd. Rec. Dia',
+    'avg_min' => 'Méd. Gasto Dia',
+    'avg_avg' => 'Média Dia'
 ];
