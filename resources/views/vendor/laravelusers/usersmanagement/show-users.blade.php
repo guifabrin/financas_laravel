@@ -122,9 +122,9 @@
                                             <td class="hidden-sm hidden-xs hidden-md">{{$user->created_at}}</td>
                                             <td class="hidden-sm hidden-xs hidden-md">{{$user->updated_at}}</td>
                                             <td>
-                                                {!! Form::open(array('url' => 'users/' . $user->id, 'class' => '', 'data-toggle' => 'tooltip', 'title' => trans('laravelusers::laravelusers.tooltips.delete'))) !!}
+                                                {!! Form::open(array('url' => 'users/' . $user->id, 'class' => '', 'data-toggle' => 'tooltip', 'title' => __('laravelusers::laravelusers.tooltips.delete'))) !!}
                                                     {!! Form::hidden('_method', 'DELETE') !!}
-                                                    {!! Form::button(trans('laravelusers::laravelusers.buttons.delete'), array('class' => 'btn btn-danger btn-sm','type' => 'button', 'style' =>'width: 100%;' ,'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => trans('laravelusers::modals.delete_user_title'), 'data-message' => trans('laravelusers::modals.delete_user_message', ['user' => $user->name]))) !!}
+                                                    {!! Form::button(__('laravelusers::laravelusers.buttons.delete'), array('class' => 'btn btn-danger btn-sm','type' => 'button', 'style' =>'width: 100%;' ,'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => __('laravelusers::modals.delete_user_title'), 'data-message' => __('laravelusers::modals.delete_user_message', ['user' => $user->name]))) !!}
                                                 {!! Form::close() !!}
                                             </td>
                                             <td>

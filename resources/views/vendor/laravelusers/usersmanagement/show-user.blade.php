@@ -58,7 +58,7 @@
                             <div class="col-3 col-sm-4 col-md-4 col-lg-3">
                                 {!! Form::open(array('url' => 'users/' . $user->id, 'class' => 'form-inline')) !!}
                                     {!! Form::hidden('_method', 'DELETE') !!}
-                                    {!! Form::button(trans('laravelusers::laravelusers.buttons.delete-user'), array('class' => 'btn btn-danger btn-md btn-block','type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => 'Delete User', 'data-message' => 'Are you sure you want to delete this user?')) !!}
+                                    {!! Form::button(__('laravelusers::laravelusers.buttons.delete-user'), array('class' => 'btn btn-danger btn-md btn-block','type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => 'Delete User', 'data-message' => 'Are you sure you want to delete this user?')) !!}
                                 {!! Form::close() !!}
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                                     <div class="row">
                                         <div class="col-4 col-sm-3">
                                             <strong>
-                                                {{ trans('laravelusers::laravelusers.show-user.labelRole') }}
+                                                {{ __('laravelusers::laravelusers.show-user.labelRole') }}
                                             </strong>
                                         </div>
                                         <div class="col-8 col-sm-9">

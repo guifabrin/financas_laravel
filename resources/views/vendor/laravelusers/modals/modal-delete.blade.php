@@ -16,8 +16,8 @@
                 </p>
             </div>
             <div class="modal-footer">
-                {!! Form::button(trans('laravelusers::modals.delete_user_btn_cancel'), array('class' => 'btn btn-light pull-left', 'type' => 'button', 'data-dismiss' => 'modal' )) !!}
-                {!! Form::button(trans('laravelusers::modals.delete_user_btn_confirm'), array('class' => 'btn btn-danger pull-right btn-flat', 'type' => 'button', 'id' => 'confirm' )) !!}
+                {!! Form::button(__('laravelusers::modals.delete_user_btn_cancel'), array('class' => 'btn btn-light pull-left', 'type' => 'button', 'data-dismiss' => 'modal' )) !!}
+                {!! Form::button(__('laravelusers::modals.delete_user_btn_confirm'), array('class' => 'btn btn-danger pull-right btn-flat', 'type' => 'button', 'id' => 'confirm' )) !!}
             </div>
         </div>
     </div>
