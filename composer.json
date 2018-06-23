@@ -7,9 +7,12 @@
     "require": {
         "php": ">=7.0.0",
         "asgrim/ofxparser": "^1.2",
+        "barryvdh/laravel-translation-manager": "^0.4.2",
         "doctrine/dbal": "^2.5",
         "fideloper/proxy": "~3.3",
         "guzzlehttp/guzzle": "^6.3",
+        "jeremykenedy/laravel-roles": "^1.2",
+        "jeremykenedy/laravel-users": "^3.1",
         "laravel/framework": "5.5.*",
         "laravel/socialite": "^3.0",
         "laravel/tinker": "~1.0",
