@@ -2,20 +2,21 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" id="{{$id}}">{{__('common.import')}} {{$account->description}}</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="{{__('common.close')}}">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="{{$id}}">{{__('common.import')}} {{$account->description}}</h4>
       </div>
       <form action="/account/{{!$isAccount?'invoice/':''}}uploadOfx" method="POST" enctype="multipart/form-data">
         {{csrf_field()}}
         <input type="hidden" value="{{$id}}" name="accountId"/>
         <div class="modal-body">
+          <h5>{{__('common.import')}} {{__('common.ofx')}}</h5>
           <input type="file" name="ofx-file[]" multiple />
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{{__('common.close')}}</button>
-          <button type="submit" class="btn btn-primary">{{__('common.import')}}</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('common.close')}}</button>
+          <button type="submit" class="btn btn-info">{{__('common.import')}}</button>
         </div>
       </form>
       <form action="/account/{{!$isAccount?'invoice/':''}}uploadCsv" method="POST" enctype="multipart/form-data">
@@ -27,11 +28,12 @@
         @endif
         {{csrf_field()}}
         <div class="modal-body">
+          <h5>{{__('common.import')}} {{__('common.csv')}}</h5>
           <input type="file" name="csv-file[]" multiple />
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{{__('common.close')}}</button>
-          <button type="submit" class="btn btn-primary">{{__('common.import')}}</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('common.close')}}</button>
+          <button type="submit" class="btn btn-info">{{__('common.import')}}</button>
         </div>
       </form>
     </div>

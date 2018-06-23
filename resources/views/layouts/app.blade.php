@@ -18,10 +18,10 @@
     @include('layouts.nav')
     <div class="container-fluid">
       <div class="row title">
-        <div class="col-md-10">
+        <div class="col-md-9">
           <h2>@yield('title')</h2>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3 title-buttons">
           @yield('title-buttons')
         </div>
       </div>

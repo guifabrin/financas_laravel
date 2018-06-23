@@ -9,18 +9,8 @@
 @import "./tagsinput.css";
 
 @import "variables";
-
 nav.navbar{
-  background-color: $primary-bg-color;
-  a {
-    color: $primary-color;
-    &:hover{
-      color: $primary-hover-color;
-    }
-    &.title{
-      font-size: $title-size;
-    }
-  }
+  margin-bottom: 10px;
 }
 
 table.table{
@@ -29,31 +19,18 @@ table.table{
     vertical-align: middle;
     text-align: center;
     &.actual{
-      background-color: $thirty-bg-color;
+      background-color:lightgray;
     }
   }
 
-  th {
-    color: $primary-color !important;
-    background-color: $primary-bg-color !important;
-  }
-
   th.actual{
-    background-color: $secondary-bg-color !important;
+    background-color:lightgray !important;
   }
-}
 
-div.title{
-  color: $secondary-color;
-  background-color: $secondary-bg-color;
-  padding: $default-space;
-  margin-bottom: $default-space;
-  h2{
-    font-size: $title2-size;
-    margin: 2px 0px;
-  }
-  .col-md-2 {
-    text-align: right;
+  td, th{
+    .btn{
+      padding: 2px;
+    }
   }
 }
 
@@ -62,21 +39,6 @@ div.title{
   &:hover{
     background-color: rgb(50, 76, 130);
   }
-}
-
-div.card{
-  margin-bottom: $default-space;
-  .card-title{
-    font-size: 14px;
-  } 
-  .card-footer{
-    text-align: center;
-   }
-}
-
-.btn.btn-secondary{
-  color: $primary-bg-color;
-  background-color: $primary-color;
 }
 
 font{
@@ -88,17 +50,19 @@ font{
   }
 }
 
-.primary-color{
-  color: $primary-color;
-  * {
-    color: $primary-color;
-    &:hover{
-      color: $primary-color;
-    }
-  }
-}
-
 input[type=date]{
   padding-right: 3px;
 }
 
+.btn{
+  padding: 7px;
+  width: 100%;
+  margin-bottom: 3px;
+}
+
+.title-buttons{
+  text-align: right;
+  .btn{
+    width: calc(50% - 2px);
+  }
+}

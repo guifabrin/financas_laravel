@@ -1,7 +1,7 @@
 <h1 style="display: none;">{{ config('app.name', 'Laravel') }}</h1>
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand title" href="{{ url('/') }}">
-    <img src="{{ asset('/images/logo.svg') }}" />{{ config('app.name', 'Laravel') }}
+    {{ config('app.name', 'Laravel') }}
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -24,9 +24,19 @@
             <a href="/transactions" class="dropdown-item">
               {{__('transactions.title')}}
             </a>
-            <a href="/transactions/charts" class="dropdown-item">
+            <!-- <a href="/transactions/charts" class="dropdown-item">
               {{__('transactions.charts')}}
-            </a>
+            </a> -->
+            @if (Auth::user()->hasRole('admin'))
+              <div class="dropdown-divider"></div>
+              <a href="/translations" class="dropdown-item">
+                {{__('translations.title')}}
+              </a>
+              <a href="/users" class="dropdown-item">
+                {{__('users.title')}}
+              </a>
+            @endif
+            <div class="dropdown-divider"></div>
             <a href="{{ route('logout') }}" class="dropdown-item"
                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
               {{__('login.logout')}}
