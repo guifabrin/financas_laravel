@@ -9,9 +9,9 @@
     {{ csrf_field() }}
 
     <div class="form-group row">
-      <label for="email" class="col-lg-4 col-form-label text-lg-right">{{__('login.email')}}</label>
+      <label for="email" class="col-lg-6 col-form-label text-lg-right">{{__('login.email')}}</label>
 
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus
         >
         @if ($errors->has('email'))
@@ -23,9 +23,9 @@
     </div>
 
     <div class="form-group row">
-      <label for="password" class="col-lg-4 col-form-label text-lg-right">{{__('login.password')}}</label>
+      <label for="password" class="col-lg-6 col-form-label text-lg-right">{{__('login.password')}}</label>
 
-      <div class="col-lg-6">
+      <div class="col-lg-4">
           <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required
           >
           @if ($errors->has('password'))
@@ -37,7 +37,7 @@
     </div>
 
     <div class="form-group row">
-      <div class="col-lg-6 offset-lg-4">
+      <div class="col-lg-4 offset-lg-6">
         <div class="form-check">
           <label class="form-check-label">
             <input type="checkbox" class="form-check-input" name="remember" {{ old('remember') ? 'checked' : '' }}> {{__('login.remember_me')}}
@@ -47,7 +47,7 @@
     </div>
 
     <div class="form-group row">
-      <div class="col-lg-8 offset-lg-4">
+      <div class="col-lg-4 offset-lg-6">
         <button type="submit" class="btn btn-primary">
           {{__('login.login')}}
         </button>
