@@ -11,7 +11,7 @@
 @endsection
 
 @section('content')
- {{ Form::open(['url' => '/account/'.$account->id.'', 'method'=>'DELETE']) }}
+ {{ Form::open(['url' => '/accounts/'.$account->id.'', 'method'=>'DELETE']) }}
     {{__('accounts.confirmation_text', ['id'=>$account->id, 'description'=>$account->description])}}
   @include('shared.submit')
   {{ Form::close() }}
