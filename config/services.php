@@ -38,7 +38,7 @@ return [
     'facebook' => [
        'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => 'http://ec2-18-219-2-27.us-east-2.compute.amazonaws.com/login/facebook/callback',
+        'redirect' => url('/login/facebook/callback'),
     ],
 
 ];
