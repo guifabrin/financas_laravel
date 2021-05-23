@@ -51,7 +51,7 @@
                         @endif
                         <div class="row mb-4">
                             <div class="col-3 offset-3 col-sm-4 offset-sm-2 col-md-4 offset-md-2 col-lg-3 offset-lg-3">
-                                <a href="/users/{{$user->id}}/edit" class="btn btn-block btn-md btn-warning">
+                                <a href="{{url('/users/'.$user->id.'/edit')}}" class="btn btn-block btn-md btn-warning">
                                     @lang('laravelusers::laravelusers.buttons.edit-user')
                                 </a>
                             </div>

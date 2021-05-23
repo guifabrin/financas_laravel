@@ -5,10 +5,10 @@
 @endsection
 
 @section('title-buttons')
-  <a class="btn btn-secondary" href="/accounts">
+  <a class="btn btn-secondary" href="{{url('accounts')}}">
     <i class="fa fa-arrow-left"></i> {{__('common.back')}}
   </a>
-  <a class="btn btn-primary" title="{{__('common.add')}}" href="/account/{{$account->id}}/invoice/create">
+  <a class="btn btn-primary" title="{{__('common.add')}}" href="{{url('account/'.$account->id.'/invoice/create')}}">
     <i class="fa fa-plus"></i> {{__('common.add')}}
   </a>
 @endsection
@@ -39,12 +39,12 @@
           </a>
         </td>
         <td>
-           <a class="btn btn-warning" title="{{__('common.edit')}} {{__('invoices.invoice')}}" href="/account/{{$account->id}}/invoice/{{$invoice->id}}/edit">
+           <a class="btn btn-warning" title="{{__('common.edit')}} {{__('invoices.invoice')}}" href="{{url('account/'.$account->id.'/invoice/'.$invoice->id.'/edit')}}">
             <i class="fa fa-edit"/></i> {{__('common.edit')}}
           </a>
         </td>
         <td>
-          <a class="btn btn-danger" title="{{__('common.remove')}} {{__('invoices.invoice')}}" href="/account/{{$account->id}}/invoice/{{$invoice->id}}/confirm">
+          <a class="btn btn-danger" title="{{__('common.remove')}} {{__('invoices.invoice')}}" href="{{url('account/'.$account->id.'/invoice/'.$invoice->id.'/confirm')}}">
             <i class="fa fa-trash"/></i> {{__('common.remove')}}
           </a>
         </td>

@@ -5,11 +5,11 @@
 @endsection
 
 @section('title-buttons')
-  <a class="btn btn-secondary" href="/accounts">
+  <a class="btn btn-secondary" href="{{url('accounts')}}">
     <i class="fa fa-arrow-left"></i> {{__('common.back')}}
   </a>
   @if (isset($account))
-    <a class="btn btn-primary" title="{{__('common.add')}}" href="/account/{{$account->id}}/transaction/create">
+    <a class="btn btn-primary" title="{{__('common.add')}}" href="{{url('account/'.$account->id.'/transaction/create')}}">
       <i class="fa fa-plus"></i> {{__('common.add')}}
     </a>
   @endif
@@ -148,17 +148,17 @@
             @endif
           </td>
           <td class="text-center">
-            <a class="btn btn-info" title="{{__('common.repeat')}} {{__('transactions.transaction')}}" href="/account/{{$transaction->account_id}}/transaction/{{$transaction->id}}/repeat?{{ $query }}">
+            <a class="btn btn-info" title="{{__('common.repeat')}} {{__('transactions.transaction')}}" href="{{url('account/'.$transaction->account_id.'/transaction/'.$transaction->id.'/repeat')}}?{{ $query }}">
               <i class="fas fa-redo-alt"/></i> {{__('common.repeat')}}
             </a>
           </td>
           <td class="text-center">
-            <a class="btn btn-warning" title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="/account/{{$transaction->account_id}}/transaction/{{$transaction->id}}/edit?{{ $query }}">
+            <a class="btn btn-warning" title="{{__('common.edit')}} {{__('transactions.transaction')}}" href="{{url('account/'.$transaction->account_id.'/transaction/'.$transaction->id.'/edit')}}?{{ $query }}">
               <i class="fa fa-edit"/></i> {{__('common.edit')}}
             </a>
           </td>
           <td class="text-center">
-            <a class="btn btn-danger" title="{{__('common.remove')}} {{__('transactions.transaction')}}" href="/account/{{$transaction->account_id}}/transaction/{{$transaction->id}}/confirm?{{ $query }}">
+            <a class="btn btn-danger" title="{{__('common.remove')}} {{__('transactions.transaction')}}" href="{{url('account/'.$transaction->account_id.'/transaction/'.$transaction->id.'/confirm')}}?{{ $query }}">
               <i class="fa fa-trash"/></i> {{__('common.remove')}}
             </a>
           </td>

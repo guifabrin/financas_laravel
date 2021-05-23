@@ -52,7 +52,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/users/deleted">
+                                            <a href="{{url('users/deleted')}}">
                                                 @if(config('laravelusers.fontAwesomeEnabled'))
                                                     <i class="fa fa-fw fa-group" aria-hidden="true"></i>
                                                 @endif

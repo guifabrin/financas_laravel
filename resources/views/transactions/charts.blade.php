@@ -5,11 +5,11 @@
 @endsection
 
 @section('title-buttons')
-  <a class="btn btn-secondary" href="/accounts">
+  <a class="btn btn-secondary" href="{{url('accounts')}}">
     <i class="fa fa-arrow-left"></i>
   </a>
   @if (isset($account))
-    <a class="btn btn-secondary" title="{{__('common.add')}}" href="/account/{{$account->id}}/transaction/create">
+    <a class="btn btn-secondary" title="{{__('common.add')}}" href="{{url('account/'.$account->id.'/transaction/create')}}">
       <i class="fa fa-plus"></i>
     </a>
   @endif

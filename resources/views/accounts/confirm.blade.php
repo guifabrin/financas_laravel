@@ -5,7 +5,7 @@
 @endsection
 
 @section('title-buttons')
-  <a class="btn btn-secondary" href="/accounts">
+  <a class="btn btn-secondary" href="{{url('accounts')}}">
     <i class="fa fa-arrow-left"></i>
   </a>
 @endsection

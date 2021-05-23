@@ -318,7 +318,7 @@ class TransactionController extends Controller
       foreach ($request->file('ofx-file') as $file) {
         $xmlstr = $this->getOfxAsXML($file);
         $ofxParser = new \OfxParser\Parser();
-        $xml = simplexml_load_string($xmlstr);
+        $xml = simplexml_load_string(utf8_encode($xmlstr));
         $ofx = new \OfxParser\Ofx($xml);
         $bankAccount = reset($ofx->bankAccounts);
         $startDate = $bankAccount->statement->startDate;

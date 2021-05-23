@@ -9,10 +9,10 @@
   </div>
 @endsection
 @section('title-buttons')
-  <a class="btn btn-secondary" title="{{__('common.view_mode')}}" href="/accounts?view_mode={{$modeView=='table'?'card':'table'}}">
+  <a class="btn btn-secondary" title="{{__('common.view_mode')}}" href="{{url('accounts')}}?view_mode={{$modeView=='table'?'card':'table'}}">
     <i class="fas fa-exchange-alt"></i> {{__('common.view_mode')}}
   </a>
-  <a class="btn btn-primary" title="{{__('common.add')}}" href="/accounts/create">
+  <a class="btn btn-primary" title="{{__('common.add')}}" href="{{url('accounts/create')}}">
     <i class="fa fa-plus"></i> {{__('common.add')}}
   </a>
 @endsection

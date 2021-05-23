@@ -7,7 +7,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="/account/{{!$isAccount?'invoice/':''}}uploadOfx" method="POST" enctype="multipart/form-data">
+      <form action="{{url('/account/'.(!$isAccount?'invoice/':''))}}/uploadOfx" method="POST" enctype="multipart/form-data">
         {{csrf_field()}}
         <input type="hidden" value="{{$id}}" name="accountId"/>
         <div class="modal-body">
@@ -19,7 +19,7 @@
           <button type="submit" class="btn btn-info">{{__('common.import')}}</button>
         </div>
       </form>
-      <form action="/account/{{!$isAccount?'invoice/':''}}uploadCsv" method="POST" enctype="multipart/form-data">
+      <form action="{{url('/account/'.(!$isAccount?'invoice/':''))}}/uploadCsv" method="POST" enctype="multipart/form-data">
         @if ($isAccount)
           <input type="hidden" value="{{$id}}" name="accountId"/>
         @else
