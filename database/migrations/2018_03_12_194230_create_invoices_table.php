@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPeriodToUsersTable extends Migration
+class CreateInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,16 @@ class AddPeriodToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('invoices', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('description', 100);
             $table->date('date_init')->default(null);
             $table->date('date_end')->default(null);
             $table->date('debit_date')->default(null);
             $table->boolean('closed')->default(false);
+            $table->integer('account_id')->unsigned();
+            $table->foreign('account_id')->references('id')->on('accounts');
+            $table->timestamps();
         });
     }
 
@@ -28,11 +33,6 @@ class AddPeriodToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            $table->dropColumn('date_init');
-            $table->dropColumn('date_end');
-            $table->dropColumn('debit_date');
-            $table->dropColumn('closed');
-        });
+        Schema::dropIfExists('invoices');
     }
 }

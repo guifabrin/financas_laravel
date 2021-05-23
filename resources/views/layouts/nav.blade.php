@@ -18,21 +18,21 @@
             {{ Auth::user()->name }}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a href="/accounts" class="dropdown-item">
+            <a href="{{url('accounts')}}" class="dropdown-item">
               {{__('accounts.title')}}
             </a>
-            <a href="/transactions" class="dropdown-item">
+            <a href="{{url('transactions')}}" class="dropdown-item">
               {{__('transactions.title')}}
             </a>
-            <!-- <a href="/transactions/charts" class="dropdown-item">
+            <!-- <a href="{{url('transactions')}}/charts" class="dropdown-item">
               {{__('transactions.charts')}}
             </a> -->
             @if (Auth::user()->hasRole('admin'))
               <div class="dropdown-divider"></div>
-              <a href="/translations" class="dropdown-item">
+              <a href="{{url('translations')}}" class="dropdown-item">
                 {{__('translations.title')}}
               </a>
-              <a href="/users" class="dropdown-item">
+              <a href="{{url('users')}}" class="dropdown-item">
                 {{__('users.title')}}
               </a>
             @endif

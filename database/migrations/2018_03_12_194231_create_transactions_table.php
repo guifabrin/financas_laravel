@@ -21,6 +21,8 @@ class CreateTransactionsTable extends Migration
             $table->boolean('paid');
             $table->integer('account_id')->unsigned();
             $table->foreign('account_id')->references('id')->on('accounts');
+            $table->integer('invoice_id')->nullable()->unsigned();
+            $table->foreign('invoice_id')->references('id')->on('invoices');
             $table->timestamps();
         });
     }
