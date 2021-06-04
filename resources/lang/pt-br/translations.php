@@ -1,5 +1,5 @@
 <?php
 
-return array (
-  'title' => 'Traduções',
+return array(
+    'title' => 'Traduções',
 );

@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 
 class User extends Authenticatable
@@ -38,6 +38,11 @@ class User extends Authenticatable
     public function accounts()
     {
         return $this->hasMany('App\Account');
+    }
+
+    public function creditCards()
+    {
+        return $this->hasMany('App\Account')->where('is_credit_card', true);
     }
 
     public function configs()

@@ -3,23 +3,27 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 
 class CheckAccount
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $accountId = $request->accountId;
-        if (!$accountId || !($account = \Auth::user()->accounts->where('id',$accountId)->first())){
-            return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+        if ($accountId) {
+            $account = $request->user()->accounts->where('id', $accountId)->first();
+            if (!$account) {
+                return redirect('/accounts')->withErrors([__('accounts.not_your_account')]);
+            }
+            $request->account = $account;
         }
-        $request->account = $account;
         return $next($request);
     }
 }

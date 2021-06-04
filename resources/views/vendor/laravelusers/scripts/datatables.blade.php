@@ -2,7 +2,7 @@
 <script type="text/javascript" src="{{ config('laravelusers.datatablesJsCDN') }}"></script>
 <script type="text/javascript" src="{{ config('laravelusers.datatablesJsPresetCDN') }}"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.data-table').dataTable({
             "paging": true,
             "lengthChange": true,

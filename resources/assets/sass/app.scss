@@ -1,76 +1,75 @@
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-
 //Font awesome
 @import url("https://use.fontawesome.com/releases/v5.0.13/css/all.css");
-
 // Bootstrap
 @import "./bootstrap.min.css";
 @import "./tagsinput.css";
-
 @import "variables";
-nav.navbar{
+
+nav.navbar {
   margin-bottom: 10px;
 }
 
-table.table{
-  td{
-  	padding: 2px !important;
+table.table {
+  td {
+    padding: 2px !important;
     vertical-align: middle;
     text-align: center;
-    &.actual{
-      background-color:lightgray;
+
+    &.actual {
+      background-color: lightgray;
     }
   }
 
-  th.actual{
-    background-color:lightgray !important;
+  th.actual {
+    background-color: lightgray !important;
   }
 
-  td, th{
-    .btn{
+  td,
+  th {
+    .btn {
       padding: 2px;
     }
   }
 }
 
-.btn-facebook{
-  background-color: #3b5998;
-  &:hover{
-    background-color: rgb(50, 76, 130);
-  }
-}
-
-font{
-  &.negative{
+font {
+  &.negative {
     color: $negative-color;
   }
-  &.positive{
+
+  &.positive {
     color: $positive-color;
   }
 }
 
-input[type=date]{
+input[type=date] {
   padding-right: 3px;
 }
 
-.btn{
+.btn {
   padding: 7px;
   width: 100%;
   margin-bottom: 3px;
 }
 
-.title-buttons{
+.title-buttons {
   text-align: right;
-  .btn{
+
+  .btn {
     width: calc(50% - 2px);
   }
 }
 
-body{
-  background-color:#f7f7f7;
+body {
+  background-color: #f7f7f7;
 }
 
 .card {
   margin-bottom: 10px;
+}
+
+.no-padding {
+  padding: 0 !important;
 }

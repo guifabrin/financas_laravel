@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -18,11 +18,16 @@ class Invoice extends Model
 
     public function account()
     {
-        return $this->belongsTo('App\Account','account_id');
+        return $this->belongsTo('App\Account', 'account_id');
+    }
+
+    public function total()
+    {
+        return $this->transactions()->sum('value');
     }
 
     public function transactions()
     {
-        return $this->hasMany('App\Transaction','invoice_id');
+        return $this->hasMany('App\Transaction', 'invoice_id');
     }
 }

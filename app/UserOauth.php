@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserOauth extends Model
 {
-    
+
     /**
      * The attributes that are mass assignable.
      *

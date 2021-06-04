@@ -60,28 +60,28 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 11:
+/***/ 10:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(12);
+module.exports = __webpack_require__(11);
 
 
 /***/ }),
 
-/***/ 12:
+/***/ 11:
 /***/ (function(module, exports) {
 
 $('#invoice_id').change(function () {
-  if (this.value == -1) {
-    $('#new_invoice').slideDown();
-  } else {
-    $('#new_invoice').slideUp();
-  }
+    if (this.value == -1) {
+        $('#new_invoice').slideDown();
+    } else {
+        $('#new_invoice').slideUp();
+    }
 });
 
 /***/ })
