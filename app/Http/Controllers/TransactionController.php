@@ -95,7 +95,7 @@ class TransactionController extends Controller
             $categoryTransaction->transaction()->associate($transaction->id);
             $categoryTransaction->save();
         }
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function edit(Request $request)
@@ -143,7 +143,7 @@ class TransactionController extends Controller
         }
         $request->transaction->save();
         $request->account->save();
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function confirm(Request $request)
@@ -154,7 +154,7 @@ class TransactionController extends Controller
     public function destroy(Request $request)
     {
         $request->transaction->delete();
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function uploadOfx(UploadOfxRequest $request)
@@ -291,7 +291,7 @@ class TransactionController extends Controller
             }
             $transaction->save();
         }
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function addCategories(Request $request)

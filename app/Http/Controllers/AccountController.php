@@ -57,7 +57,7 @@ class AccountController extends Controller
         $account->is_credit_card = !!$request->is_credit_card;
         $account->user()->associate($request->user());
         $account->save();
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function edit(Account $account)
@@ -71,7 +71,7 @@ class AccountController extends Controller
     {
         $account->description = $request->description;
         $account->save();
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function destroy(Account $account)

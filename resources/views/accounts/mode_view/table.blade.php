@@ -25,10 +25,10 @@
                     {{ $account->description }}
                 </th>
                 <td class="title " rowspan="3">
-                    <a class="btn btn-warning" title="{{ __('common.edit') }} {{ __('accounts.account') }}"
+                    <button class="btn btn-warning btn-iframe" title="{{ __('common.edit') }} {{ __('accounts.account') }}"
                        href="{{ url('accounts/' . $account->id . '/edit') }}">
                         <i class="fa fa-edit"></i>
-                    </a>
+                    </button>
                 </td>
                 <td class="title " rowspan="3">
                     {{ Form::open(['url' => '/accounts/' . $account->id . '', 'method' => 'DELETE']) }}

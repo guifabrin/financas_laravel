@@ -32,7 +32,7 @@ class InvoiceController extends Controller
         $invoice->date_end = $request->date_end;
         $invoice->debit_date = $request->debit_date;
         $invoice->save();
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function edit(Request $request)
@@ -47,7 +47,7 @@ class InvoiceController extends Controller
         $request->invoice->date_end = $request->date_end;
         $request->invoice->debit_date = $request->debit_date;
         $request->invoice->save();
-        return view('layouts.close_modal');
+        return view('layouts.reload');
     }
 
     public function destroy(Request $request)
