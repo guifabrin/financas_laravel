@@ -50,6 +50,38 @@ class TransactionController extends Controller
         return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd]);
     }
 
+    public function chart(Request $request)
+    {
+        if ($request->year && $request->month) {
+            $dateInit = date("Y-m-d", strtotime(date($request->year . '-' . ($request->month) . '-1')));
+            $dateEnd = date('Y-m-t', strtotime($dateInit));
+        } else {
+            $dateInit = $request->date_init;
+            $dateEnd = $request->date_end;
+        }
+        $filterDate = true;
+        if (isset($request->invoice_id)) {
+            $invoice = $request->account->invoices()->where('id', $request->invoice_id)->first();
+            if (isset($invoice)) {
+                $filterDate = false;
+                $transactions = $invoice->transactions();
+            } else {
+                $transactions = $request->account->transactions();
+            }
+        } else if (isset($request->account)) {
+            $transactions = $request->account->transactions();
+        } else {
+            $transactions = Transaction::whereIn('account_id', $request->user()->accounts->map(function ($account) {
+                return $account->id;
+            }));
+        }
+        if ($filterDate && $dateInit !== null && $dateEnd !== null) {
+            $transactions->whereBetween('date', [$dateInit, $dateEnd]);
+        }
+        $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description')->all();
+        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd]);
+    }
+
     public function create(Request $request)
     {
         return view('transactions.form', ['action' => __('common.add'), 'account' => $request->account]);
@@ -250,7 +282,7 @@ class TransactionController extends Controller
         return redirect('/accounts/');
     }
 
-    private function csvToArray($filename = '', $delimiter = ',')
+    private function csvToArray($filename = '', $delimiter = ';')
     {
         if (!file_exists($filename) || !is_readable($filename))
             return false;

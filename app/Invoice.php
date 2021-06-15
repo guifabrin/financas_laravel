@@ -21,9 +21,17 @@ class Invoice extends Model
         return $this->belongsTo('App\Account', 'account_id');
     }
 
+    public function beforeInvoice(){
+        return $this->account->invoices()->where('debit_date', '<', $this->debit_date)->orderBy('debit_date', 'desc')->first();
+    }
+
     public function total()
     {
-        return $this->transactions()->sum('value');
+        $beforeInvoice = $this->beforeInvoice();
+        if (!$beforeInvoice){
+            return $this->transactions()->sum('value');
+        }
+        return $beforeInvoice->total() + $this->transactions()->sum('value');
     }
 
     public function transactions()

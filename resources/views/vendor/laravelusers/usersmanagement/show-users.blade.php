@@ -81,7 +81,7 @@
                         @endif
 
                         <div class="table-responsive users-table">
-                            <table class="table table-striped table-sm data-table">
+                            <table class="table table-sm table-bordered table-striped" style="margin-top:10px;">
                                 <caption id="user_count">
                                     {{ trans_choice('laravelusers::laravelusers.users-table.caption', 1, ['userscount' => $users->count()]) }}
                                 </caption>

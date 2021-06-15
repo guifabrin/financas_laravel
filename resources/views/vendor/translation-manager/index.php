@@ -439,7 +439,7 @@
         </form>
         <hr>
         <h4>Total: <?= $numTranslations ?>, changed: <?= $numChanged ?></h4>
-        <table class="table">
+        <table class="table table-sm table-bordered table-striped" style="margin-top:10px;">
             <thead>
             <tr>
                 <th width="15%">Key</th>

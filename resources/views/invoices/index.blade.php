@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-    <table class="table table-bordered">
+    <table class="table table-sm table-bordered table-striped" style="margin-top:10px;">
         <thead>
         <tr class="active">
             <th>{{__('common.id')}}</th>

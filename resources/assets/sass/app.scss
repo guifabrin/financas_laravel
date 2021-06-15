@@ -6,70 +6,58 @@
 @import "./bootstrap.min.css";
 @import "./tagsinput.css";
 @import "variables";
-
 nav.navbar {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 table.table {
-  td {
-    padding: 2px !important;
-    vertical-align: middle;
-    text-align: center;
-
-    &.actual {
-      background-color: lightgray;
+    td {
+        padding: 2px !important;
+        vertical-align: middle;
+        text-align: center;
     }
-  }
-
-  th.actual {
-    background-color: lightgray !important;
-  }
-
-  td,
-  th {
-    .btn {
-      padding: 2px;
+    td,
+    th {
+        .btn {
+            padding: 2px;
+        }
     }
-  }
 }
 
 font {
-  &.negative {
-    color: $negative-color;
-  }
-
-  &.positive {
-    color: $positive-color;
-  }
+    &.negative {
+        color: $negative-color;
+    }
+    &.positive {
+        color: $positive-color;
+    }
 }
 
 input[type=date] {
-  padding-right: 3px;
+    padding-right: 3px;
 }
 
 .btn {
-  padding: 7px;
-  width: 100%;
-  margin-bottom: 3px;
+    padding: 7px;
+    width: 100%;
+    margin-bottom: 3px;
 }
 
 .title-buttons {
-  text-align: right;
-
-  .btn {
-    width: calc(50% - 2px);
-  }
+    text-align: right;
+    .btn {
+        width: calc(50% - 2px);
+    }
 }
 
 body {
-  background-color: #f7f7f7;
+    background-color: #f7f7f7;
 }
 
 .card {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .no-padding {
-  padding: 0 !important;
+    padding: 0 !important;
 }

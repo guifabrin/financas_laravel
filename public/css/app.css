@@ -9751,14 +9751,6 @@ table.table td {
   text-align: center;
 }
 
-table.table td.actual {
-  background-color: lightgray;
-}
-
-table.table th.actual {
-  background-color: lightgray !important;
-}
-
 table.table td .btn,
 table.table th .btn {
   padding: 2px;
