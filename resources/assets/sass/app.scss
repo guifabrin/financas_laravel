@@ -6,6 +6,7 @@
 @import "./bootstrap.min.css";
 @import "./tagsinput.css";
 @import "variables";
+
 nav.navbar {
   margin-bottom: 10px;
 }
@@ -16,6 +17,7 @@ table.table {
     vertical-align: middle;
     text-align: right;
   }
+
   td,
   th {
     .btn {
@@ -29,6 +31,7 @@ font {
   &.negative {
     color: $negative-color;
   }
+
   &.positive {
     color: $positive-color;
   }
@@ -54,6 +57,7 @@ font {
 
 .title-buttons {
   text-align: right;
+
   .btn {
     width: calc(50% - 2px);
   }

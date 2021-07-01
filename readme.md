@@ -22,4 +22,5 @@ This is a simple and old project developed in Laravel 5.5 and Bootstrap 4 to man
 ![](docs/account.png)
 
 ## Demo Video
+
 [![YouTube](https://img.youtube.com/vi/f4FmbfLHYF8/0.jpg)](https://www.youtube.com/watch?v=f4FmbfLHYF8&t=7s)

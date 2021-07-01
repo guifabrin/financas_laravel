@@ -56,6 +56,7 @@ class Account extends Model
         $period = DateHelper::getYearPeriods($year);
         return $this->invoices()->whereBetween('debit_date', [$period->init[$month], $period->end[$month]])->get();
     }
+
     public function transactionsIn($year, $month)
     {
         $period = DateHelper::getYearPeriods($year);
