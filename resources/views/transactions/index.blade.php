@@ -83,20 +83,22 @@
                                     </div>
                                 </td>
                             @endif
-                            <td class="text-center actions-buttons">
-                                <button class="btn btn-info btn-iframe"
-                                    title="{{ __('common.repeat') }} {{ __('transactions.transaction') }}"
-                                    href="{{ url('account/' . $transaction->account_id . '/transaction/' . $transaction->id . '/repeat') }}">
-                                    <i class="fas fa-redo-alt"></i>
-                                </button>
-                                <button class="btn btn-warning btn-iframe"
-                                    title="{{ __('common.edit') }} {{ __('transactions.transaction') }}"
-                                    href="{{ url('account/' . $transaction->account_id . '/transaction/' . $transaction->id . '/edit') }}">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                {{ Form::open(['url' => '/account/' . $transaction->account_id . '/transaction/' . $transaction->id, 'method' => 'DELETE', 'data-message' => __('transactions.confirmation_text', ['accountId' => $transaction->account->id, 'accountDescription' => $transaction->account->description, 'id' => $transaction->id, 'description' => $transaction->description])]) }}
-                                {{ Form::button('<i class="fa fa-trash"></i> ', ['type' => 'submit', 'class' => 'btn btn-danger', 'style' => 'float:right;']) }}
-                                {{ Form::close() }}
+                            <td class="text-center">
+                                <div class="actions-buttons">
+                                    <button class="btn btn-info btn-iframe"
+                                        title="{{ __('common.repeat') }} {{ __('transactions.transaction') }}"
+                                        href="{{ url('account/' . $transaction->account_id . '/transaction/' . $transaction->id . '/repeat') }}">
+                                        <i class="fas fa-redo-alt"></i>
+                                    </button>
+                                    <button class="btn btn-warning btn-iframe"
+                                        title="{{ __('common.edit') }} {{ __('transactions.transaction') }}"
+                                        href="{{ url('account/' . $transaction->account_id . '/transaction/' . $transaction->id . '/edit') }}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    {{ Form::open(['url' => '/account/' . $transaction->account_id . '/transaction/' . $transaction->id, 'method' => 'DELETE', 'data-message' => __('transactions.confirmation_text', ['accountId' => $transaction->account->id, 'accountDescription' => $transaction->account->description, 'id' => $transaction->id, 'description' => $transaction->description])]) }}
+                                    {{ Form::button('<i class="fa fa-trash"></i> ', ['type' => 'submit', 'class' => 'btn btn-danger', 'style' => 'float:right;']) }}
+                                    {{ Form::close() }}
+                                </div>
                             </td>
                         </tr>
                     @endforeach
