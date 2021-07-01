@@ -34,7 +34,9 @@
                         <th>{{ __('common.description') }}</th>
                         <th>{{ __('common.categories') }}</th>
                         <th class="text-center">{{ __('transactions.value') }}</th>
-                        <th class="text-center">{{ __('transactions.paid') }}</th>
+                        @if (!isset($account) || !$account->is_credit_card)
+                            <th class="text-center">{{ __('transactions.paid') }}</th>
+                        @endif
                         <th class="text-center">{{ __('common.actions') }}</th>
                     </tr>
                 </thead>
@@ -70,16 +72,17 @@
                             <td class="text-right">
                                 {!! format_money($transaction->value) !!}
                             </td>
-                            <td class="text-center">
-                                @if (!$transaction->account->is_credit_card)
+                            @if (!isset($account) || !$account->is_credit_card)
+                                <td>
                                     <div class="checkbox">
                                         <label style="margin-bottom: 0px;">
-                                            <input style="vertical-align: middle;" disabled="true" type="checkbox"
-                                                {{ $transaction->paid ? "checked='true'" : '' }} />
+                                            <input style="vertical-align: middle;" type="checkbox"
+                                                {{ $transaction->paid ? "checked='true'" : '' }}
+                                                onchange="payTransaction({{ $transaction->id }}, {{ !$transaction->paid }} )" />
                                         </label>
                                     </div>
-                                @endif
-                            </td>
+                                </td>
+                            @endif
                             <td class="text-center actions-buttons">
                                 <button class="btn btn-info btn-iframe"
                                     title="{{ __('common.repeat') }} {{ __('transactions.transaction') }}"
@@ -110,4 +113,29 @@
             </table>
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        const auth = btoa("{{ Auth::user()->email }}:{{ Auth::user()->password }}");
+        const headers = new Headers();
+        headers.append("Authorization", "Basic " + auth);
+        window.payTransaction = (transaction_id, value) => {
+            const self = this;
+            fetch("http://localhost:8888/api/v1/transactions/" + transaction_id, {
+                    method: "PUT",
+                    headers: headers,
+                    mode: "cors",
+                    body: JSON.stringify({
+                        paid: value ? 1 : 0
+                    }),
+                })
+                .then((response) => response.json())
+                .then(() => {
+                    document.location.reload(true);
+                })
+                .catch((ex) => {
+                    console.log("error", ex);
+                });
+        }
+    </script>
 @endsection

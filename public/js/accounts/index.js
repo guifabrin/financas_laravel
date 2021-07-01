@@ -84,7 +84,7 @@ window.syncAccount = function (account_id, automated_body) {
             return;
         }
     }
-    var auth = btoa("{{ Auth::user()->name }}:{{ Auth::user()->password }}");
+    var auth = btoa("{{ Auth::user()->email }}:{{ Auth::user()->password }}");
     var headers = new Headers();
     headers.append("Authorization", "Basic " + auth);
     fetch("http://localhost:8888/api/v1/automated/" + account_id, {

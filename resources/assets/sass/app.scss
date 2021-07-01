@@ -19,7 +19,8 @@ table.table {
   td,
   th {
     .btn {
-      padding: 2px;
+      padding: 5px;
+      margin-left: 3px;
     }
   }
 }
@@ -42,6 +43,7 @@ input[type="date"] {
   margin-bottom: 3px;
 }
 
+.actions-buttons,
 .actions-buttons > * {
   float: right;
 }

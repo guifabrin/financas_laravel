@@ -9753,7 +9753,8 @@ table.table td {
 
 table.table td .btn,
 table.table th .btn {
-  padding: 2px;
+  padding: 5px;
+  margin-left: 3px;
 }
 
 font.negative {
@@ -9773,6 +9774,7 @@ input[type="date"] {
   margin-bottom: 3px;
 }
 
+.actions-buttons,
 .actions-buttons > * {
   float: right;
 }

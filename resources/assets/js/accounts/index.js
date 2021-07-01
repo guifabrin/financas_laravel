@@ -6,7 +6,7 @@ window.syncAccount = (account_id, automated_body) => {
             return;
         }
     }
-    const auth = btoa("{{ Auth::user()->name }}:{{ Auth::user()->password }}");
+    const auth = btoa("{{ Auth::user()->email }}:{{ Auth::user()->password }}");
     const headers = new Headers();
     headers.append("Authorization", "Basic " + auth);
     fetch("http://localhost:8888/api/v1/automated/" + account_id, {
