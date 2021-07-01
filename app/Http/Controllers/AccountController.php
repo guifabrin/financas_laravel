@@ -33,6 +33,9 @@ class AccountController extends Controller
             $sum->paid[$month] = 0;
             $sum->notPaid[$month] = 0;
             foreach ($accounts as $account) {
+                if ($account->ignore) {
+                    continue;
+                }
                 $sum->paid[$month] += $account->paidValues[$year][$month];
                 $sum->notPaid[$month] += $account->notPaidValues[$year][$month];
             }

@@ -47,7 +47,7 @@ class TransactionController extends Controller
             $transactions->whereBetween('date', [$dateInit, $dateEnd]);
         }
         $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description')->paginate(30)->appends(request()->input());
-        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd]);
+        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
     }
 
     public function chart(Request $request)
@@ -79,12 +79,13 @@ class TransactionController extends Controller
             $transactions->whereBetween('date', [$dateInit, $dateEnd]);
         }
         $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description')->all();
-        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd]);
+        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
     }
 
     public function create(Request $request)
     {
-        return view('transactions.form', ['action' => __('common.add'), 'account' => $request->account]);
+        $date = ($request->year && $request->month) ? date("Y-m-d", strtotime(date($request->year . '-' . ($request->month) . '-1'))) : null;
+        return view('transactions.form', ['action' => __('common.add'), 'account' => $request->account, 'invoice_id' => $request->invoice_id, 'date' => $date]);
     }
 
     public function store(Request $request)
@@ -127,12 +128,12 @@ class TransactionController extends Controller
             $categoryTransaction->transaction()->associate($transaction->id);
             $categoryTransaction->save();
         }
-        return view('layouts.reload');
+        //return view('layouts.reload');
     }
 
     public function edit(Request $request)
     {
-        return view('transactions.form', ['action' => __('common.edit'), 'account' => $request->account, 'transaction' => $request->transaction]);
+        return view('transactions.form', ['action' => __('common.edit'), 'account' => $request->account, 'transaction' => $request->transaction, 'date' => null]);
     }
 
     public function update(Request $request)

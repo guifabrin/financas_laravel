@@ -10940,18 +10940,30 @@ __webpack_require__(5);
 __webpack_require__(6);
 
 $('.btn-iframe').on('click', function (event) {
-    var $elModal = $('#modal');
+    var elModal = $('#modal')[0] || $('#modal', parent.document)[0];
+    var $elModal = $(elModal);
     var $elIframe = $elModal.find('iframe');
+    $elIframe[0].style.height = "0px";
     $elIframe.on('load', function () {
         var $elH2 = $elIframe.contents().find('h2');
         $elModal.find('.modal-title').text($elH2.text());
-        $elIframe[0].style.height = $elIframe.contents().find('body').height() + "px";
+        $elIframe[0].style.height = $elIframe.contents().find('body').height() + 40 + "px";
     });
     $elModal.on("hidden.bs.modal", function () {
         document.location.reload(true);
     });
-    $elIframe.attr('src', $(event.target).attr('href'));
+    var strUrl = $(event.target.closest('.btn')).attr('href');
+    var url = new URL(strUrl);
+    url.searchParams.set('iframe', true);
+    $elIframe.attr('src', url);
     $elModal.modal('show');
+});
+
+$('form').submit(function (event) {
+    if (event.target.dataset.message) {
+        return confirm(event.target.dataset.message);
+    }
+    return true;
 });
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 

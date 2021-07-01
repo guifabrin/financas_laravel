@@ -76,9 +76,28 @@ module.exports = __webpack_require__(9);
 /***/ 9:
 /***/ (function(module, exports) {
 
-function show_invoice(id) {
-    $("#invoice_" + id).show();
-}
+window.syncAccount = function (account_id, automated_body) {
+    var isafe = "";
+    if (automated_body) {
+        isafe = prompt("isafe");
+        if (!isafe || isafe.length != 6) {
+            return;
+        }
+    }
+    var auth = btoa("{{ Auth::user()->name }}:{{ Auth::user()->password }}");
+    var headers = new Headers();
+    headers.append("Authorization", "Basic " + auth);
+    fetch("http://localhost:8888/api/v1/automated/" + account_id, {
+        method: "POST",
+        headers: headers,
+        mode: "cors",
+        body: isafe
+    }).then(function () {
+        document.location.reload(true);
+    }).catch(function (ex) {
+        console.log("error", ex);
+    });
+};
 
 /***/ })
 

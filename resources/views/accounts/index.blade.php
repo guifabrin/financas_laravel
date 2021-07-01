@@ -4,7 +4,7 @@
 @endsection
 @section('title-buttons')
     <a class="btn btn-secondary" title="{{ __('common.view_mode') }}"
-       href="{{ url('accounts') }}?view_mode={{ $modeView == 'table' ? 'card' : 'table' }}">
+        href="{{ url('accounts') }}?view_mode={{ $modeView == 'table' ? 'card' : 'table' }}">
         <i class="fas fa-exchange-alt"></i> {{ __('common.view_mode') }}
     </a>
     <button class="btn btn-primary btn-iframe" title="{{ __('common.add') }}" href="{{ url('accounts/create') }}">

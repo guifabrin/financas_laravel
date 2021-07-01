@@ -17,7 +17,7 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'description', 'is_credit_card'
+        'description', 'is_credit_card', 'automated_body', 'automated_args', 'ignore'
     ];
 
     public function __construct(array $attributes = [])
@@ -49,6 +49,18 @@ class Account extends Model
     public function invoices()
     {
         return $this->hasMany('App\Invoice');
+    }
+
+    public function invoicesIn($year, $month)
+    {
+        $period = DateHelper::getYearPeriods($year);
+        return $this->invoices()->whereBetween('debit_date', [$period->init[$month], $period->end[$month]])->get();
+    }
+    public function transactionsIn($year, $month)
+    {
+        $period = DateHelper::getYearPeriods($year);
+        //var_dump(explode(' ', $period->init[$month])[0], explode(' ', $period->end[$month])[0]);
+        return $this->transactions()->where('date', '>=', explode(' ', $period->init[$month])[0])->where('date', '<=', explode(' ', $period->end[$month])[0])->get();
     }
 
     public function fillValues(int $year)

@@ -83,6 +83,7 @@ $('#invoice_id').change(function () {
         $('#new_invoice').slideUp();
     }
 });
+$('#invoice_id').change();
 
 /***/ })
 

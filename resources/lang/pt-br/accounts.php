@@ -6,8 +6,6 @@ return array(
     'is_credit_card' => 'Cartão de crédito',
     'prefer_debit_account' => 'Conta preferida de débito',
     'not_your_account' => 'A conta selecionada não é sua',
-    'confirm_destroy' => 'Confirmação
-para remover conta',
     'confirmation_text' => 'Tem certeza que deseja remover a conta :id/:description?',
     'amount' => 'Saldo',
     'end_month_amount' => 'Saldo fim do mês',

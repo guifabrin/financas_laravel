@@ -304,7 +304,7 @@ input[type=radio] {
 }
 
 input[type=date],
-input[type=datetime-local],
+input[type=date],
 input[type=month],
 input[type=time] {
     -webkit-appearance: listbox
@@ -9748,7 +9748,7 @@ nav.navbar {
 table.table td {
   padding: 2px !important;
   vertical-align: middle;
-  text-align: center;
+  text-align: right;
 }
 
 table.table td .btn,
@@ -9764,14 +9764,21 @@ font.positive {
   color: #0e4a0e;
 }
 
-input[type=date] {
+input[type="date"] {
   padding-right: 3px;
 }
 
 .btn {
   padding: 7px;
-  width: 100%;
   margin-bottom: 3px;
+}
+
+.actions-buttons > * {
+  float: right;
+}
+
+font {
+  display: block;
 }
 
 .title-buttons {
