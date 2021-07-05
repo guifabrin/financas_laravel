@@ -28,6 +28,12 @@ class AccountController extends Controller
         foreach ($accounts as $account) {
             $account->fillValues($year);
         }
+        $accounts = $accounts->sortBy(function ($a, $key) {
+            $s = $a->is_credit_card ? 0.2 : 0.1;
+            $i = $a->is_credit_card ? $a->prefer_debit_account_id : $a->id;
+            $b = $a->ignore ? 1000 : 0;
+            return ($i + $s + $b);
+        });
         $sum = (object)['paid' => [], 'notPaid' => []];
         for ($month = 0; $month < 12; $month++) {
             $sum->paid[$month] = 0;
@@ -58,6 +64,7 @@ class AccountController extends Controller
     {
         $account->description = $request->description;
         $account->is_credit_card = !!$request->is_credit_card;
+        $account->ignore = !!$request->ignore;
         $account->user()->associate($request->user());
         $account->save();
         return view('layouts.reload');
@@ -73,6 +80,7 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
         $account->description = $request->description;
+        $account->ignore = !!$request->ignore;
         $account->save();
         return view('layouts.reload');
     }

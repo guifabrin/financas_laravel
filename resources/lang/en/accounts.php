@@ -17,4 +17,5 @@ return array(
     'totals' => 'Total final',
     'totals_not_paid' => 'Total not paid',
     'totals_paid' => 'Total paid',
+    'ignore' => 'Ignore?'
 );

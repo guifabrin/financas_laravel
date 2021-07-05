@@ -18,9 +18,6 @@ $('.btn-iframe').on('click', (event) => {
         $elModal.find('.modal-title').text($elH2.text());
         $elIframe[0].style.height = ($elIframe.contents().find('body').height() + 40) + "px";
     });
-    $elModal.on("hidden.bs.modal", function () {
-        document.location.reload(true);
-    })
     const strUrl = $(event.target.closest('.btn')).attr('href');
     var url = new URL(strUrl);
     url.searchParams.set('iframe', true)

@@ -9745,16 +9745,50 @@ nav.navbar {
   margin-bottom: 10px;
 }
 
+@media only screen and (max-width: 600px) {
+  .years {
+    display: none;
+  }
+}
+
 table.table td {
   padding: 2px !important;
   vertical-align: middle;
   text-align: right;
 }
 
+table.table td,
+table.table th {
+  position: relative;
+}
+
+@media only screen and (max-width: 600px) {
+  table.table td,
+  table.table th {
+    display: none;
+  }
+
+  table.table td.table-active,
+  table.table th.table-active {
+    display: table-cell;
+  }
+
+  table.table td.description,
+  table.table th.description {
+    width: 200px;
+  }
+}
+
 table.table td .btn,
 table.table th .btn {
   padding: 5px;
   margin-left: 3px;
+  width: 25px;
+}
+
+table.table td .btn.btn-link,
+table.table th .btn.btn-link {
+  width: auto;
 }
 
 font.negative {
@@ -9793,6 +9827,7 @@ font {
 
 body {
   background-color: #f7f7f7;
+  padding-top: 60px;
 }
 
 .card {
@@ -9801,5 +9836,18 @@ body {
 
 .no-padding {
   padding: 0 !important;
+}
+
+.banco_image {
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.5;
+  z-index: -1;
 }
 

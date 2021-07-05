@@ -28,7 +28,15 @@
                     </div>
                 </div>
             @endif
-            {{ Form::button('<i class="fa fa-save"></i> '.__('common.submit'),['type'=>'submit', 'class'=>'btn btn-primary']) }}
+            <div class="form-group">
+                {{ Form::label('ignore', __('accounts.ignore')) }}
+                <div class="checkbox">
+                    <label>
+                        {{ Form::checkbox('ignore', 1, old('ignore', isset($account) && $account->ignore == '1')) }}
+                    </label>
+                </div>
+            </div>
+            {{ Form::button('<i class="fa fa-save"></i> ' . __('common.submit'), ['type' => 'submit', 'class' => 'btn btn-primary']) }}
             {{ Form::close() }}
         </div>
     </div>

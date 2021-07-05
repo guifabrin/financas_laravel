@@ -16,4 +16,5 @@ return array(
     'avg_max' => 'Média de recebimento por dia',
     'avg_min' => 'Média de gasto por dia',
     'avg_avg' => 'Média por dia',
+    'ignore' => 'Ignorar?'
 );

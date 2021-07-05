@@ -70,7 +70,7 @@
                                 @endif
                                 @if ($account->automated_args)
                                     <button class="btn btn-primary"
-                                            onclick="syncAccount({{ $account->id }}, {{ $account->automated_body == '1' ? 'true' : 'false' }})">
+                                            onclick="syncAccount({{ $account->id }}, {{ $account->automated_body == '1' ? 'true' : 'false' }}, this)">
                                         <i class="fa fa-sync"></i>
                                     </button>
                                 @endif

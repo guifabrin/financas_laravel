@@ -14,3 +14,4 @@ composer.phar
 database.sqlite
 /public/js/*
 /public/css/*
+/logs/
