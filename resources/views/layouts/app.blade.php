@@ -54,7 +54,9 @@
             </div>
         </div>
     </div>
-
+    <div class="loading" style="display: none;">
+        <i class="fa fa-sync fa-spin"></i>
+    </div>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}?v={{ time() }}"></script>
     @yield('script')
