@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -51,3 +54,4 @@ Route::group(['middleware' => ['account', 'invoice']], function () {
     Route::post('account/invoice/uploadCsv', 'TransactionController@uploadCsv');
 });
 
+Route::put('notifications/{id}', 'NotificationController@markAsSeen');

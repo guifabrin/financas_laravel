@@ -15,12 +15,12 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         $invoices = $request->account->invoices()->orderBy('debit_date')->get();
-        return view('invoices.index', ['account' => $request->account, 'invoices' => $invoices]);
+        return view_theme($request, 'invoices.index', ['account' => $request->account, 'invoices' => $invoices]);
     }
 
     public function create(Request $request)
     {
-        return view('invoices.form', ['action' => __('common.add'), 'account' => $request->account]);
+        return view_theme($request, 'invoices.form', ['action' => __('common.add'), 'account' => $request->account]);
     }
 
     public function store(Request $request)
@@ -32,12 +32,12 @@ class InvoiceController extends Controller
         $invoice->date_end = $request->date_end;
         $invoice->debit_date = $request->debit_date;
         $invoice->save();
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
     public function edit(Request $request)
     {
-        return view('invoices.form', ['action' => __('common.edit'), 'account' => $request->account, 'invoice' => $request->invoice]);
+        return view_theme($request, 'invoices.form', ['action' => __('common.edit'), 'account' => $request->account, 'invoice' => $request->invoice]);
     }
 
     public function update(Request $request)
@@ -47,7 +47,7 @@ class InvoiceController extends Controller
         $request->invoice->date_end = $request->date_end;
         $request->invoice->debit_date = $request->debit_date;
         $request->invoice->save();
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
     public function destroy(Request $request)

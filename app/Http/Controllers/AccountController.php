@@ -7,6 +7,7 @@ use App\Helpers\DateHelper;
 use App\Helpers\ModeViewHelper;
 use Illuminate\Http\Request;
 
+
 class AccountController extends Controller
 {
     public function __construct()
@@ -16,7 +17,7 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
-        $modeView = ModeViewHelper::check($request, 'constants.user_configs.mode_account_view');
+        $modeView = ModeViewHelper::mode($request, 'constants.user_configs.mode_account_view');
         $year = date('Y');
         if ($modeView == 'table') {
             $year = $request->year ?? $year;
@@ -46,7 +47,7 @@ class AccountController extends Controller
                 $sum->notPaid[$month] += $account->notPaidValues[$year][$month];
             }
         }
-        return view('accounts.index', [
+        return view_theme($request, 'accounts.index', [
             'accounts' => $accounts,
             'years' => $years,
             'actual' => (object)['year' => $year, 'month' => date('n') - 1],
@@ -55,9 +56,9 @@ class AccountController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('accounts.form');
+        return view_theme($request, 'accounts.form');
     }
 
     public function store(Request $request, Account $account)
@@ -67,12 +68,12 @@ class AccountController extends Controller
         $account->ignore = !!$request->ignore;
         $account->user()->associate($request->user());
         $account->save();
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
-    public function edit(Account $account)
+    public function edit(Request $request, Account $account)
     {
-        return view('accounts.form', [
+        return view_theme($request, 'accounts.form', [
             'account' => $account
         ]);
     }
@@ -82,7 +83,7 @@ class AccountController extends Controller
         $account->description = $request->description;
         $account->ignore = !!$request->ignore;
         $account->save();
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
     public function destroy(Account $account)

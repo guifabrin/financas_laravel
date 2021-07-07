@@ -40,37 +40,37 @@
                             </div>
                             <div class="card-footer">
                                 <a class="btn btn-warning"
-                                   title="{{ __('common.edit') }} {{ __('accounts.account') }}"
-                                   href="{{ url('accounts/' . $account->id . '/edit') }}">
+                                    title="{{ __('common.edit') }} {{ __('accounts.account') }}"
+                                    href="{{ url('accounts/' . $account->id . '/edit') }}">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <a class="btn btn-danger"
-                                   title="{{ __('common.remove') }} {{ __('accounts.account') }}"
-                                   href="{{ url('accounts/' . $account->id . '/confirm') }}">
+                                    title="{{ __('common.remove') }} {{ __('accounts.account') }}"
+                                    href="{{ url('accounts/' . $account->id . '/confirm') }}">
                                     <i class="fa fa-trash"></i>
                                 </a>
                                 <a class="btn btn-info"
-                                   title="{{ __('common.import') }} {{ __('accounts.account') }}" href="#"
-                                   data-toggle="modal" data-target="#model_account_{{ $account->id }}">
+                                    title="{{ __('common.import') }} {{ __('accounts.account') }}" href="#"
+                                    data-toggle="modal" data-target="#model_account_{{ $account->id }}">
                                     <i class="fa fa-upload"></i>
                                 </a>
                                 @if (!(isset($account->invoices) && isset($account->invoices[$actual->month])))
                                     <a class="btn btn-secondary" style="margin-right: 5px;"
-                                       title="{{ __('transactions.title') }}"
-                                       href="{{ url('/account/' . $account->id . '/transactions') }}?month={{ $actual->month }}&year={{ $actual->year }}">
+                                        title="{{ __('transactions.title') }}"
+                                        href="{{ url('/account/' . $account->id . '/transactions') }}?month={{ $actual->month }}&year={{ $actual->year }}">
                                         <i class="fa fa-list"></i>
                                     </a>
                                 @endif
                                 @if ($account->is_credit_card)
                                     <a class="btn btn-secondary"
-                                       title="{{ __('invoices.title') }} {{ __('accounts.account') }}"
-                                       href="{{ url('account/' . $account->id . '/invoices') }}">
+                                        title="{{ __('invoices.title') }} {{ __('accounts.account') }}"
+                                        href="{{ url('account/' . $account->id . '/invoices') }}">
                                         <i class="fas fa-receipt"></i>
                                     </a>
                                 @endif
                                 @if ($account->automated_args)
                                     <button class="btn btn-primary"
-                                            onclick="syncAccount({{ $account->id }}, {{ $account->automated_body == '1' ? 'true' : 'false' }}, this)">
+                                        onclick="syncAccount({{ $account->id }}, {{ $account->automated_body == '1' ? 'true' : 'false' }}, this)">
                                         <i class="fa fa-sync"></i>
                                     </button>
                                 @endif

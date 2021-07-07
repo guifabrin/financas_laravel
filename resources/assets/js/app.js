@@ -35,3 +35,16 @@ $('form').submit((event) => {
     }
     return true;
 })
+
+$('.notification').on('click', (event) => {
+    const form = $(event.currentTarget.closest('form'))
+    var url = form.attr('action');
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: form.serialize(),
+        success: function () {
+            event.currentTarget.classList.remove('active')
+        }
+    });
+})

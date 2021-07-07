@@ -5,10 +5,10 @@
 @endsection
 
 @section('template_linked_css')
-    @if(config('laravelusers.enabledDatatablesJs'))
+    @if (config('laravelusers.enabledDatatablesJs'))
         <link rel="stylesheet" type="text/css" href="{{ config('laravelusers.datatablesCssCDN') }}">
     @endif
-    @if(config('laravelusers.fontAwesomeEnabled'))
+    @if (config('laravelusers.fontAwesomeEnabled'))
         <link rel="stylesheet" type="text/css" href="{{ config('laravelusers.fontAwesomeCdn') }}">
     @endif
     @include('laravelusers::partials.styles')
@@ -17,7 +17,7 @@
 
 @section('content')
     <div class="container">
-        @if(config('laravelusers.enablePackageBootstapAlerts'))
+        @if (config('laravelusers.enablePackageBootstapAlerts'))
             <div class="row">
                 <div class="col-lg-10 offset-lg-1">
                     @include('laravelusers::partials.form-status')
@@ -32,9 +32,9 @@
                             @lang('laravelusers::laravelusers.showing-user-title', ['name' => $user->name])
                             <div class="float-right">
                                 <a href="{{ route('users') }}" class="btn btn-light btn-sm float-right"
-                                   data-toggle="tooltip" data-placement="left"
-                                   title="@lang('laravelusers::laravelusers.tooltips.back-users')">
-                                    @if(config('laravelusers.fontAwesomeEnabled'))
+                                    data-toggle="tooltip" data-placement="left"
+                                    title="@lang('laravelusers::laravelusers.tooltips.back-users')">
+                                    @if (config('laravelusers.fontAwesomeEnabled'))
                                         <i class="fas fa-fw fa-reply-all" aria-hidden="true"></i>
                                     @endif
                                     @lang('laravelusers::laravelusers.buttons.back-to-users')
@@ -46,22 +46,22 @@
                         <h4 class="text-muted text-center">
                             {{ $user->name }}
                         </h4>
-                        @if($user->email)
+                        @if ($user->email)
                             <p class="text-center" data-toggle="tooltip" data-placement="top"
-                               title="@lang('laravelusers::laravelusers.tooltips.email-user', ['user' => $user->email])">
+                                title="@lang('laravelusers::laravelusers.tooltips.email-user', ['user' => $user->email])">
                                 {{ Html::mailto($user->email, $user->email) }}
                             </p>
                         @endif
                         <div class="row mb-4">
                             <div class="col-3 offset-3 col-sm-4 offset-sm-2 col-md-4 offset-md-2 col-lg-3 offset-lg-3">
-                                <a href="{{url('/users/'.$user->id.'/edit')}}" class="btn btn-block btn-md btn-warning">
+                                <a href="{{ url('/users/' . $user->id . '/edit') }}" class="btn btn-block btn-md btn-warning">
                                     @lang('laravelusers::laravelusers.buttons.edit-user')
                                 </a>
                             </div>
                             <div class="col-3 col-sm-4 col-md-4 col-lg-3">
-                                {!! Form::open(array('url' => 'users/' . $user->id, 'class' => 'form-inline')) !!}
+                                {!! Form::open(['url' => 'users/' . $user->id, 'class' => 'form-inline']) !!}
                                 {!! Form::hidden('_method', 'DELETE') !!}
-                                {!! Form::button(__('laravelusers::laravelusers.buttons.delete-user'), array('class' => 'btn btn-danger btn-md btn-block','type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => 'Delete User', 'data-message' => 'Are you sure you want to delete this user?')) !!}
+                                {!! Form::button(__('laravelusers::laravelusers.buttons.delete-user'), ['class' => 'btn btn-danger btn-md btn-block', 'type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => 'Delete User', 'data-message' => 'Are you sure you want to delete this user?']) !!}
                                 {!! Form::close() !!}
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                                     </div>
                                 </li>
                             @endif
-                            @if(config('laravelusers.rolesEnabled'))
+                            @if (config('laravelusers.rolesEnabled'))
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-4 col-sm-3">
@@ -125,7 +125,8 @@
                                                 @else
                                                     @php $labelClass = 'default' @endphp
                                                 @endif
-                                                <span class="badge badge-{{$labelClass}}">{{ $user_role->name }}</span>
+                                                <span
+                                                    class="badge badge-{{ $labelClass }}">{{ $user_role->name }}</span>
                                             @endforeach
                                         </div>
                                     </div>
@@ -138,20 +139,20 @@
                                             </strong>
                                         </div>
                                         <div class="col-12 col-sm-9">
-                                            @if($user->level() >= 5)
-                                                <span class="badge badge-primary margin-half margin-left-0">5</span>
+                                            @if ($user->level() >= 5)
+                                                <span class="badge bg-primary margin-half margin-left-0">5</span>
                                             @endif
-                                            @if($user->level() >= 4)
-                                                <span class="badge badge-info margin-half margin-left-0">4</span>
+                                            @if ($user->level() >= 4)
+                                                <span class="badge bg-info margin-half margin-left-0">4</span>
                                             @endif
-                                            @if($user->level() >= 3)
-                                                <span class="badge badge-success margin-half margin-left-0">3</span>
+                                            @if ($user->level() >= 3)
+                                                <span class="badge bg-success margin-half margin-left-0">3</span>
                                             @endif
-                                            @if($user->level() >= 2)
-                                                <span class="badge badge-warning margin-half margin-left-0">2</span>
+                                            @if ($user->level() >= 2)
+                                                <span class="badge bg-warning margin-half margin-left-0">2</span>
                                             @endif
-                                            @if($user->level() >= 1)
-                                                <span class="badge badge-default margin-half margin-left-0">1</span>
+                                            @if ($user->level() >= 1)
+                                                <span class="badge bg-default margin-half margin-left-0">1</span>
                                             @endif
                                         </div>
                                     </div>
@@ -196,7 +197,7 @@
 
 @section('template_scripts')
     @include('laravelusers::scripts.delete-modal-script')
-    @if(config('laravelusers.tooltipsEnabled'))
+    @if (config('laravelusers.tooltipsEnabled'))
         @include('laravelusers::scripts.tooltips')
     @endif
 @endsection

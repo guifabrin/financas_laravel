@@ -11,8 +11,11 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet"><!-- Styles -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/{{ $theme }}/bootstrap.min.css">
     @yield('stylesheet')
 </head>
 

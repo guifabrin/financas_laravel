@@ -10,10 +10,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}?v={{ time() }}" rel="stylesheet">
-
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/{{ $theme ?? 'cosmo' }}/bootstrap.min.css">
+    <link rel="shortcut icon" href="{{ asset('images/icon.png') }}">
     @yield('stylesheet')
 </head>
 
@@ -40,12 +41,12 @@
     </div>
 
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -58,7 +59,7 @@
         <i class="fa fa-sync fa-spin"></i>
     </div>
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     @yield('script')
 </body>
 

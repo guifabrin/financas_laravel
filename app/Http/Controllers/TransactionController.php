@@ -47,7 +47,7 @@ class TransactionController extends Controller
             $transactions->whereBetween('date', [$dateInit, $dateEnd]);
         }
         $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description')->paginate(30)->appends(request()->input());
-        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
+        return view_theme($request, 'transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
     }
 
     public function chart(Request $request)
@@ -79,13 +79,13 @@ class TransactionController extends Controller
             $transactions->whereBetween('date', [$dateInit, $dateEnd]);
         }
         $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description')->all();
-        return view('transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
+        return view_theme($request, 'transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
     }
 
     public function create(Request $request)
     {
         $date = ($request->year && $request->month) ? date("Y-m-d", strtotime(date($request->year . '-' . ($request->month) . '-1'))) : null;
-        return view('transactions.form', ['action' => __('common.add'), 'account' => $request->account, 'invoice_id' => $request->invoice_id, 'date' => $date]);
+        return view_theme($request, 'transactions.form', ['action' => __('common.add'), 'account' => $request->account, 'invoice_id' => $request->invoice_id, 'date' => $date]);
     }
 
     public function store(Request $request)
@@ -128,12 +128,12 @@ class TransactionController extends Controller
             $categoryTransaction->transaction()->associate($transaction->id);
             $categoryTransaction->save();
         }
-        //return view('layouts.reload');
+        //return view_theme($request, 'layouts.reload');
     }
 
     public function edit(Request $request)
     {
-        return view('transactions.form', ['action' => __('common.edit'), 'account' => $request->account, 'transaction' => $request->transaction, 'date' => null]);
+        return view_theme($request, 'transactions.form', ['action' => __('common.edit'), 'account' => $request->account, 'transaction' => $request->transaction, 'date' => null]);
     }
 
     public function update(Request $request)
@@ -176,18 +176,18 @@ class TransactionController extends Controller
         }
         $request->transaction->save();
         $request->account->save();
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
     public function confirm(Request $request)
     {
-        return view('transactions.confirm', ['account' => $request->account, 'transaction' => $request->transaction]);
+        return view_theme($request, 'transactions.confirm', ['account' => $request->account, 'transaction' => $request->transaction]);
     }
 
     public function destroy(Request $request)
     {
         $request->transaction->delete();
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
     public function uploadOfx(UploadOfxRequest $request)
@@ -285,7 +285,7 @@ class TransactionController extends Controller
 
     public function repeat(Request $request)
     {
-        return view('transactions.repeat', [
+        return view_theme($request, 'transactions.repeat', [
             'account' => $request->account,
             'transaction' => $request->transaction
         ]);
@@ -306,7 +306,7 @@ class TransactionController extends Controller
             }
             $transaction->save();
         }
-        return view('layouts.reload');
+        return view_theme($request, 'layouts.reload');
     }
 
     public function addCategories(Request $request)
@@ -346,7 +346,7 @@ class TransactionController extends Controller
             if ($filterDate && $dateInit !== null && $dateEnd !== null) {
                 $transactions->whereBetween('date', [$dateInit, $dateEnd]);
             }
-            $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->get();
+            $transactions = $transactions->whereRaw("id in (" . implode(',', $request->id) . ")")->get();
             foreach ($transactions as $transaction) {
                 if ($transaction->categories->where('category_id', $category->id)->first() === null) {
                     $categoryTransaction = new CategoryTransaction;

@@ -8,7 +8,7 @@
 
     var defaultOptions = {
         tagClass: function (item) {
-            return 'badge badge-info';
+            return 'badge bg-primary';
         },
         focusClass: 'focus',
         itemValue: function (item) {
@@ -85,7 +85,7 @@
 
             // Throw an error when trying to add an object while the itemValue option was not set
             if (typeof item === "object" && !self.objectItems)
-                throw("Can't add objects when itemValue option is not set");
+                throw ("Can't add objects when itemValue option is not set");
 
             // Ignore strings only containg whitespace
             if (item.toString().match(/^\s*$/))
@@ -134,7 +134,7 @@
                 return;
 
             // raise beforeItemAdd arg
-            var beforeItemAddEvent = $.Event('beforeItemAdd', {item: item, cancel: false, options: options});
+            var beforeItemAddEvent = $.Event('beforeItemAdd', { item: item, cancel: false, options: options });
             self.$element.trigger(beforeItemAddEvent);
             if (beforeItemAddEvent.cancel)
                 return;
@@ -176,9 +176,9 @@
             }
 
             if (this.isInit) {
-                self.$element.trigger($.Event('itemAddedOnInit', {item: item, options: options}));
+                self.$element.trigger($.Event('itemAddedOnInit', { item: item, options: options }));
             } else {
-                self.$element.trigger($.Event('itemAdded', {item: item, options: options}));
+                self.$element.trigger($.Event('itemAdded', { item: item, options: options }));
             }
         },
 
@@ -203,7 +203,7 @@
             }
 
             if (item) {
-                var beforeItemRemoveEvent = $.Event('beforeItemRemove', {item: item, cancel: false, options: options});
+                var beforeItemRemoveEvent = $.Event('beforeItemRemove', { item: item, cancel: false, options: options });
                 self.$element.trigger(beforeItemRemoveEvent);
                 if (beforeItemRemoveEvent.cancel)
                     return;
@@ -225,7 +225,7 @@
             if (self.options.maxTags > self.itemsArray.length)
                 self.$container.removeClass('bootstrap-tagsinput-max');
 
-            self.$element.trigger($.Event('itemRemoved', {item: item, options: options}));
+            self.$element.trigger($.Event('itemRemoved', { item: item, options: options }));
         },
 
         /**

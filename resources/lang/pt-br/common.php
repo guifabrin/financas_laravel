@@ -46,5 +46,5 @@ return array(
     'close' => 'Fechar',
     'ofx' => 'OFX',
     'csv' => 'CSV',
-    'refresh' => 'Atualizar'
+    'imported' => 'Importado'
 );

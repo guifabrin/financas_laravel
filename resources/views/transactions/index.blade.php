@@ -19,14 +19,10 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <?php $query = (isset($_GET['description']) ? 'description=' . $_GET['description'] : '') . '&' .
-            (isset($_GET['date_init']) && isset($_GET['date_end']) ? 'date_init=' . $_GET['date_init'] . '&date_end=' .
-            $_GET['date_end'] : ''); ?>
             @include('transactions.filters')
             <table class="table table-sm table-bordered table-striped" style="margin-top:10px;">
                 <thead>
                     <tr>
-                        <th>{{ __('common.id') }}</th>
                         <th>{{ __('common.date') }}</th>
                         @if (!isset($account) || $account->is_credit_card)
                             <th>{{ __('transactions.invoice') }}</th>
@@ -43,10 +39,6 @@
                 <tbody>
                     @foreach ($transactions as $transaction)
                         <tr>
-                            <td>
-                                {{ $transaction->id }}/{{ isset($transaction->invoice) ? $transaction->invoice->id : 'cc' }}
-                                /{{ $transaction->account->id }}
-                            </td>
                             <td>
                                 {{ formatDate($transaction->date) }}
                             </td>
@@ -65,7 +57,7 @@
                                     @foreach ($transaction->categories as $category)
                                         @if ($category->category->description)
                                             <span
-                                                class="badge badge badge-info">{{ $category->category->description }}</span>
+                                                class="badge badge bg-primary">{{ $category->category->description }}</span>
                                         @endif
                                     @endforeach
                                 @endif

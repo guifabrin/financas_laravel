@@ -10966,6 +10966,19 @@ $('form').submit(function (event) {
     }
     return true;
 });
+
+$('.notification').on('click', function (event) {
+    var form = $(event.currentTarget.closest('form'));
+    var url = form.attr('action');
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: form.serialize(),
+        success: function success() {
+            event.currentTarget.classList.remove('active');
+        }
+    });
+});
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
@@ -12603,7 +12616,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     var defaultOptions = {
         tagClass: function tagClass(item) {
-            return 'badge badge-info';
+            return 'badge bg-primary';
         },
         focusClass: 'focus',
         itemValue: function itemValue(item) {

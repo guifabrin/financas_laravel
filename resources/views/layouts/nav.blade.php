@@ -1,7 +1,7 @@
 <h1 style="display: none;">{{ config('app.name', 'Laravel') }}</h1>
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary container-fluid">
     <a class="navbar-brand title" href="{{ url('/') }}">
-        {{ config('app.name', 'Laravel') }}
+        <img src="{{ asset('images/icon.png') }}" style="width: 24px;" /> {{ config('app.name', 'Laravel') }}
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,8 +16,53 @@
                 <li class="nav-item"><a href="{{ route('register') }}"
                         class="nav-link primary-color">{{ __('login.register') }}</a></li>
             @else
-                <li class="nav-item"><a href="{{ Request::url() }}"
-                        class="nav-link primary-color">{{ __('common.refresh') }}</a></li>
+                @if (isset($notifications))
+                    <li class="nav-item dropdown">
+                        <a class="nav-link primary-color dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span>
+                                {{ $notificationsCount }}
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            @foreach ($notifications as $notification)
+                                {{ Form::open(['url' => '/notifications/' . $notification->notification_id, 'method' => 'PUT']) }}
+                                <a href="#"
+                                    class="dropdown-item notification {{ $notification->seen ? '' : 'active' }}">
+                                    {{ __('common.imported') }} {{ $notification->id }}
+                                    <small style="display: block;">
+                                        {{ $notification->date }} {{ $notification->description }}
+                                    </small>
+                                    <small>
+                                        {{ $notification->account_id }} / {{ $notification->account_description }}
+                                    </small>
+                                </a>
+                                {{ Form::close() }}
+                            @endforeach
+                        </div>
+                    </li>
+                @endif
+                <li class="nav-item dropdown">
+                    <a class="nav-link primary-color dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>
+                            {{ $theme }}
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        @foreach ($themes as $ntheme)
+                            <a href="{{ request()->fullUrlWithQuery(['theme' => $ntheme]) }}"
+                                class="dropdown-item theme {{ $ntheme == $theme ? 'active' : '' }}">
+                                {{ $ntheme }}
+                            </a>
+                        @endforeach
+                    </div>
+                </li>
+
+                <li class="nav-item"><a href="{{ Request::url() }}" class="nav-link primary-color">
+                        <i class="fas fa-sync"></i>
+                    </a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link primary-color dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
