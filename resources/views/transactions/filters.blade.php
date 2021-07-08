@@ -11,15 +11,15 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     {{ Form::label('date_init', __('common.date_init')) }}
                     {{ Form::date('date_init', old('date_init', $dateInit), ['class' => 'form-control', 'style' => 'width:100%;']) }}
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     {{ Form::label('date_end', __('common.date_end')) }}
                     {{ Form::date('date_end', old('date_end', $dateEnd), ['class' => 'form-control', 'style' => 'width:100%;']) }}
                 </div>
-                <div class="col-sm-4" style='text-align: center;'>
+                <div class="col-sm-2" style='text-align: center;'>
                     <br>
                     <button class="btn btn-info">
                         <i class="fa fa-search"></i>
@@ -42,11 +42,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-9">
+                    <div class="col-sm-10">
                         {{ Form::label('date_init', __('transactions.invoice')) }}
                         {{ Form::select('invoice_id', $account->getOptionsInvoices(false), old('invoice_id', isset($request->invoice_id) ? $request->invoice_id : null), ['class' => 'form-control', 'style' => 'width:100%;']) }}
                     </div>
-                    <div class="col-sm-3" style='text-align: center;'>
+                    <div class="col-sm-2" style='text-align: center;'>
                         <br>
                         <button class="btn btn-info">
                             <i class="fa fa-search"></i>
@@ -58,17 +58,18 @@
         </div>
     @endif
 </div>
-{{ Form::open(['url' => (isset($account) ? '/account/' . $account->id : '') . '/transactions/addCategories', 'method' => 'PUT', 'class' => 'form-inline row']) }}
-<div class="col-sm-9">
-    <h4>{{ __('common.add_category') }}</h4>
-    {{ Form::text('categories', old('categories', ''), ['class' => 'form-control', 'data-role' => 'tagsinput']) }}
+<div class="row">
+    <div class="col-sm-12">
+        <h4>{{ __('common.add_category') }}</h4>
 
-    @foreach ($transactions as $transaction)
-        {{ Form::hidden('id[]', $transaction->id) }}
-    @endforeach
+        {{ Form::open(['url' => (isset($account) ? '/account/' . $account->id : '') . '/transactions/addCategories', 'method' => 'PUT', 'style' => 'display: flex;']) }}
+        {{ Form::text('categories', old('categories', ''), ['data-role' => 'tagsinput']) }}
+
+        @foreach ($transactionsall as $transaction)
+            {{ Form::hidden('id[]', $transaction->id) }}
+        @endforeach
+        <br>
+        {{ Form::button('<i class="fa fa-save"></i> ', ['type' => 'submit', 'class' => 'btn btn-primary', 'style' => 'margin-left: 15px;']) }}
+        {{ Form::close() }}
+    </div>
 </div>
-<div class="col-sm-3">
-    <br>
-    {{ Form::button('<i class="fa fa-save"></i> ' . __('common.submit'), ['type' => 'submit', 'class' => 'btn btn-primary', 'style' => 'width:100%;']) }}
-</div>
-{{ Form::close() }}

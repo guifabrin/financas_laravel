@@ -17,9 +17,9 @@
 @endsection
 
 @section('content')
+    @include('transactions.filters')
     <div class="row">
         <div class="col-12">
-            @include('transactions.filters')
             <table class="table table-sm table-bordered table-striped" style="margin-top:10px;">
                 <thead>
                     <tr>

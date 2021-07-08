@@ -196,6 +196,7 @@ font {
   z-index: 1000000;
   width: 100%;
   height: 100%;
+  background: #80808099;
 }
 
 .loading i {
@@ -206,5 +207,9 @@ font {
   -webkit-transform: translateX(-50%) translateY(-50%);
           transform: translateX(-50%) translateY(-50%);
   color: white;
+}
+
+h4 {
+  margin: 15px 0 !important;
 }
 

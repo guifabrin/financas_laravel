@@ -46,8 +46,11 @@ class TransactionController extends Controller
         if ($filterDate && $dateInit !== null && $dateEnd !== null) {
             $transactions->whereBetween('date', [$dateInit, $dateEnd]);
         }
-        $transactions = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description')->paginate(30)->appends(request()->input());
-        return view_theme($request, 'transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request]);
+        $query = $transactions->whereRaw("lower(description) LIKE '%" . strtolower($request->description) . "%'")->orderBy('date')->orderBy('description');
+
+        $transactionsall =  $query->get();
+        $transactions =  $query->paginate(30)->appends(request()->input());
+        return view_theme($request, 'transactions.index', ['account' => $request->account, 'transactions' => $transactions, 'dateInit' => $dateInit, 'dateEnd' => $dateEnd, 'request' => $request, 'transactionsall' => $transactionsall]);
     }
 
     public function chart(Request $request)

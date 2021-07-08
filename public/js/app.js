@@ -10944,14 +10944,15 @@ $('.btn-iframe').on('click', function (event) {
     var $elModal = $(elModal);
     var $elIframe = $elModal.find('iframe');
     $elIframe[0].style.height = "0px";
-    document.querySelector('.loading').style.display = "block";
+    var $elLoading = $('.loading')[0] || $('.loading', parent.document)[0];
+    $elLoading.style.display = "block";
     $elIframe.on('load', function () {
         $elModal.modal('show');
         setTimeout(function () {
             var $elH2 = $elIframe.contents().find('h2');
             $elModal.find('.modal-title').text($elH2.text());
             $elIframe[0].style.height = $elIframe.contents().find('body').height() + 40 + "px";
-            document.querySelector('.loading').style.display = "none";
+            $elLoading.style.display = "none";
         }, 300);
     });
     var strUrl = $(event.target.closest('.btn')).attr('href');

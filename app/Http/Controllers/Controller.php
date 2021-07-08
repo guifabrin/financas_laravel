@@ -47,27 +47,28 @@ function view_theme($request, $view, $params = [])
     $params['themes'] = $themes;
 
     $sql = "
-    SELECT a.description AS account_description,
-        a.id          AS account_id,
-        n.id          AS notification_id,
-        n.seen,
-        t.*
-    FROM   transactions AS t
-        JOIN accounts AS a
-            ON t.account_id = a.id
-        JOIN notifications n
-            ON n.entity_id = t.id
-    WHERE  t.id IN (SELECT entity_id
-                    FROM   notifications)
-        AND t.account_id IN (SELECT id
-                                FROM   accounts
-                                WHERE  user_id =? )
-    LIMIT  10 
-";
-    $paras['notifications'] = DB::select($sql, [$request->user()->id]);
-    $paras['notificationsCount'] = count(
+        SELECT a.description AS account_description,
+            a.id          AS account_id,
+            n.id          AS notification_id,
+            n.seen,
+            t.*
+        FROM   transactions AS t
+            JOIN accounts AS a
+                ON t.account_id = a.id
+            JOIN notifications n
+                ON n.entity_id = t.id
+        WHERE  t.id IN (SELECT entity_id
+                        FROM   notifications)
+            AND t.account_id IN (SELECT id
+                                    FROM   accounts
+                                    WHERE  user_id =? )
+        ORDER BY n.id desc
+        LIMIT  10 
+    ";
+    $params['notifications'] = DB::select($sql, [$request->user()->id]);
+    $params['notificationsCount'] = count(
         array_filter(
-            $paras['notifications'],
+            $params['notifications'],
             function ($v, $k) {
                 return !$v->seen;
             },
