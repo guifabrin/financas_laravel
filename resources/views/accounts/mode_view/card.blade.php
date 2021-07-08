@@ -6,7 +6,11 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">{{ $account->description }}</h5>
+                                <div class="banco_image" @if ($account->automated_args) style="background-image: url('./images/{{ explode(',', $account->automated_args)[0] }}.png')" @endif>
+                                </div>
+                                <h5 class="card-title">
+                                    {{ $account->description }}
+                                </h5>
                                 @php
                                     $paid = $account->paidValues[$actual->year][$actual->month];
                                     $non = $account->notPaidValues[$actual->year][$actual->month];

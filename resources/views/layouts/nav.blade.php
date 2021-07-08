@@ -60,6 +60,24 @@
                     </div>
                 </li>
 
+
+                <li class="nav-item">
+                    <a href="{{ request()->fullUrlWithQuery(['fontSize' => $fontSize * 1.1]) }}"
+                        class="nav-link primary-color {{ $fontSize > 1 ? 'active' : '' }}">A+</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ request()->fullUrlWithQuery(['fontSize' => $fontSize * 0.9]) }}"
+                        class="nav-link primary-color {{ $fontSize < 1 ? 'active' : '' }}">A-</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ request()->fullUrlWithQuery(['compactMode' => $compactMode ? false : true]) }}"
+                        class="nav-link primary-color {{ $compactMode ? 'active' : '' }}">
+                        <i class="fa fa-compact-disc"></i>
+                    </a>
+                </li>
+
                 <li class="nav-item"><a href="{{ Request::url() }}" class="nav-link primary-color">
                         <i class="fas fa-sync"></i>
                     </a></li>

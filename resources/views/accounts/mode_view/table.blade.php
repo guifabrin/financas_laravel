@@ -71,45 +71,59 @@
                     </th>
                     @for ($month = 0; $month < 12; $month++)
                         <td class="{{ $month == $actual->month ? 'table-active' : '' }}">
-                            @if ($account->is_credit_card)
-                                @php
-                                    $invoices = $account->invoicesIn($actual->year, $month);
-                                @endphp
-                                @if ($invoices->count())
-                                    @foreach ($invoices as $invoice)
-                                        <button class="btn btn-link btn-iframe"
-                                            title="{{ __('transactions.title') }}"
-                                            href="{{ url('account/' . $account->id . '/transactions') }}?invoice_id={{ $invoice->id }}">
-                                            {!! format_money($invoice->total()) !!}
-                                        </button>
-                                    @endforeach
-                                @endif
-                            @else
-                                @php
-                                    $transactions = $account->transactionsIn($actual->year, $month);
-                                @endphp
-                                <button class="btn btn-link btn-iframe" title="{{ __('transactions.title') }}"
-                                    href="{{ url('account/' . $account->id . '/transactions?year=' . $actual->year . '&month=' . ($month + 1)) }}">
+                            <div style="display: flex;">
+                                @if ($account->is_credit_card)
                                     @php
-                                        $paid = $account->paidValues[$actual->year][$month];
-                                        $non = $account->notPaidValues[$actual->year][$month];
-                                        $total = $paid + $non;
+                                        $invoices = $account->invoicesIn($actual->year, $month);
                                     @endphp
-                                    {!! format_money($paid) !!}
-                                    @if ($non != 0)
-                                        {!! format_money($non) !!}
+                                    @if ($invoices->count())
+                                        @foreach ($invoices as $invoice)
+                                            <button class="btn btn-link btn-iframe"
+                                                title="{{ __('transactions.title') }}"
+                                                href="{{ url('account/' . $account->id . '/transactions') }}?invoice_id={{ $invoice->id }}"
+                                                style="text-align: right;  flex: 1;">
+                                                {!! format_money($invoice->total()) !!}
+                                                <small class="hide-compact">
+                                                    <small>
+                                                        {!! format_money($invoice->totalNegative()) !!}
+                                                    </small>
+                                                    <small>
+                                                        {!! format_money($invoice->totalPositive()) !!}
+                                                    </small>
+                                                </small>
+                                            </button>
+                                        @endforeach
                                     @endif
-                                    @if ($total != $paid)
-                                        {!! format_money($total) !!}
-                                    @endif
-                                </button>
+                                @else
+                                    @php
+                                        $transactions = $account->transactionsIn($actual->year, $month);
+                                    @endphp
+                                    <button class="btn btn-link btn-iframe" title="{{ __('transactions.title') }}"
+                                        style="text-align: right; flex: 1;"
+                                        href="{{ url('account/' . $account->id . '/transactions?year=' . $actual->year . '&month=' . ($month + 1)) }}">
+                                        @php
+                                            $paid = $account->paidValues[$actual->year][$month];
+                                            $non = $account->notPaidValues[$actual->year][$month];
+                                            $total = $paid + $non;
+                                        @endphp
+                                        {!! format_money($paid) !!}
+                                        <span class="hide-compact">
+                                            @if ($non != 0)
+                                                {!! format_money($non) !!}
+                                            @endif
+                                            @if ($total != $paid)
+                                                {!! format_money($total) !!}
+                                            @endif
+                                        </span>
+                                    </button>
 
-                                <button class="btn btn-primary btn-iframe"
-                                    title="{{ __('common.add') }} {{ __('transactions.transaction') }}"
-                                    href="{{ url('account/' . $account->id . '/transaction/create?year=' . $actual->year . '&month=' . ($month + 1)) }}">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            @endif
+                                    <button class="btn btn-primary btn-iframe"
+                                        title="{{ __('common.add') }} {{ __('transactions.transaction') }}"
+                                        href="{{ url('account/' . $account->id . '/transaction/create?year=' . $actual->year . '&month=' . ($month + 1)) }}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                @endif
+                            </div>
                         </td>
                     @endfor
                 </tr>

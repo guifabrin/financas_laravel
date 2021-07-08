@@ -14,6 +14,8 @@ function view_theme($request, $view, $params = [])
 {
     if (!$request->user()) {
         $params['theme'] = 'cosmo';
+        $params['fontSize'] = 1;
+        $params['compactMode'] = false;
         return view($view, $params);
     }
     $themes = [
@@ -75,6 +77,8 @@ function view_theme($request, $view, $params = [])
             ARRAY_FILTER_USE_BOTH,
         ),
     );
+    $params['fontSize'] = ModeViewHelper::fontSize($request, 'constants.user_configs.font_size');
+    $params['compactMode'] = ModeViewHelper::compactMode($request, 'constants.user_configs.compact_mode');
     return view($view, $params);
 }
 

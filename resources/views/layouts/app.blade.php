@@ -16,6 +16,14 @@
         href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/{{ $theme ?? 'cosmo' }}/bootstrap.min.css">
     <link rel="shortcut icon" href="{{ asset('images/icon.png') }}">
     @yield('stylesheet')
+    <style>
+        html {
+            font-size: {{ ($fontSize ?? 1) * 12 }}px;
+        }
+
+        {{ $compactMode ? '.hide-compact {display: none;}' : '' }}
+
+    </style>
 </head>
 
 <body>

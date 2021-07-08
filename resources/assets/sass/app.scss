@@ -86,7 +86,13 @@ font {
 .no-padding {
   padding: 0 !important;
 }
+.card {
+  background-color: transparent !important;
+}
 
+.card-footer {
+  z-index: 1;
+}
 .banco_image {
   background-size: 100% auto;
   background-repeat: no-repeat;

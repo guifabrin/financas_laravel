@@ -35,6 +35,16 @@ class Invoice extends Model
         return $beforeInvoice->total() + $this->transactions()->sum('value');
     }
 
+    public function totalPositive()
+    {
+        return $this->transactions()->where('value', '>', 0)->sum('value');
+    }
+
+    public function totalNegative()
+    {
+        return $this->transactions()->where('value', '<', 0)->sum('value');
+    }
+
     public function transactions()
     {
         return $this->hasMany('App\Transaction', 'invoice_id');

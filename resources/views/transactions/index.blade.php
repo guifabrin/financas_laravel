@@ -96,37 +96,60 @@
                         </tr>
                     @endforeach
                 </tbody>
-                @if ($transactions->links('vendor.pagination.bootstrap-4')->toHtml())
-                    <tfoot>
+                <tfoot>
+                    @if ($transactions->links('vendor.pagination.bootstrap-4')->toHtml())
                         <tr>
                             <td colspan="11">
                                 {{ $transactions->links('vendor.pagination.bootstrap-4') }}
                             </td>
                         </tr>
-                    </tfoot>
-                @endif
+                    @endif
+                    @if ($account->is_credit_card && isset($request->invoice_id))
+                        @php
+                            $invoice = $account
+                                ->invoices()
+                                ->where('id', $request->invoice_id)
+                                ->first();
+                        @endphp
+                        <tr>
+                            <td colspan="5">
+                                {{ __('accounts.totals_not_paid') }}
+                            </td>
+                            <td>
+                                {!! format_money($invoice->totalNegative()) !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                {{ __('accounts.totals_paid') }}
+                            </td>
+                            <td>
+                                {!! format_money($invoice->totalPositive()) !!}
+                            </td>
+                        </tr>
+                    @endif
+                </tfoot>
             </table>
         </div>
-    </div>
-@endsection
-@section('script')
-    <script>
-        const auth = btoa("{{ Auth::user()->email }}:{{ Auth::user()->password }}");
-        const headers = new Headers();
-        headers.append("Authorization", "Basic " + auth);
-        window.payTransaction = (transaction_id, value) => {
-            /*const self = this;
-            fetch("http://localhost:8888/api/v1/transactions/" + transaction_id, {
-                    method: "PUT",
-                    headers: headers,
-                    mode: "cors",
-                    body: JSON.stringify({
-                        paid: value ? 1 : 0
-                    }),
-                })
-                .catch((ex) => {
-                    console.log("error", ex);
-                });*/
-        }
-    </script>
-@endsection
+    @endsection
+    @section('script')
+        <script>
+            const auth = btoa("{{ Auth::user()->email }}:{{ Auth::user()->password }}");
+            const headers = new Headers();
+            headers.append("Authorization", "Basic " + auth);
+            window.payTransaction = (transaction_id, value) => {
+                /*const self = this;
+                fetch("http://localhost:8888/api/v1/transactions/" + transaction_id, {
+                        method: "PUT",
+                        headers: headers,
+                        mode: "cors",
+                        body: JSON.stringify({
+                            paid: value ? 1 : 0
+                        }),
+                    })
+                    .catch((ex) => {
+                        console.log("error", ex);
+                    });*/
+            }
+        </script>
+    @endsection
