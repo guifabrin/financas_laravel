@@ -62,7 +62,7 @@
     <div class="col-sm-12">
         <h4>{{ __('common.add_category') }}</h4>
 
-        {{ Form::open(['url' => (isset($account) ? '/account/' . $account->id : '') . '/transactions/addCategories', 'method' => 'PUT', 'style' => 'display: flex;']) }}
+        {{ Form::open(['url' => (isset($account) ? '/account/' . $account->id : '') . '/transactions/addCategories?backTo=' . urlencode(request()->fullUrl()), 'method' => 'PUT', 'style' => 'display: flex;']) }}
         {{ Form::text('categories', old('categories', ''), ['data-role' => 'tagsinput']) }}
 
         @foreach ($transactionsall as $transaction)

@@ -18,7 +18,7 @@
             <div class="col-md-{{ $account->is_credit_card ? '6' : '12' }}">
                 <div class="form-group">
                     {{ Form::label('date', __('common.date')) }}
-                    {{ Form::input('date', 'date', old('date', isset($transaction) ? $transaction->date : $date), ['class' => 'form-control']) }}
+                    {{ Form::input('date', 'date', old('date', isset($transaction) ? explode('T', $transaction->date)[0] : $date), ['class' => 'form-control']) }}
                 </div>
             </div>
             @if (!$account->is_credit_card)
@@ -34,7 +34,7 @@
             </div>
     </div>
     <div id="new_invoice" class="form-group"
-         style="{{ isset($transaction) && ($transaction->invoice_id == -1 || $transaction->invoice_id == null) ? '' : 'display: none' }};">
+        style="{{ isset($transaction) && ($transaction->invoice_id == -1 || $transaction->invoice_id == null) ? '' : 'display: none' }};">
         <div class="container-fluid" style="padding: 0px;">
             <div class="row" style="padding: 0px;">
                 <div class="col-md-12">

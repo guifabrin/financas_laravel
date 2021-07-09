@@ -29,7 +29,7 @@
                         <div class="actions-buttons">
                             @if ($account->automated_args)
                                 <button class="btn btn-primary"
-                                    onclick="syncAccount({{ $account->id }}, {{ $account->automated_body == '1' ? 'true' : 'false' }}, this)">
+                                    onclick="syncAccount({{ $account->id }}, {{ $account->automated_body == '1' ? 'true' : 'false' }}, this, {{ $account->automated_args && explode(',', $account->automated_args)[0] == 'sync_sodexo_alimentacao' ? 'true' : 'false' }})">
                                     <i class="fa fa-sync"></i>
                                 </button>
                             @else

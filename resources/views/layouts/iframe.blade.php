@@ -16,6 +16,14 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"><!-- Styles -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/{{ $theme }}/bootstrap.min.css">
+    <style>
+        html {
+            font-size: {{ ($fontSize ?? 1) * 12 }}px;
+        }
+
+        {{ $compactMode ?? false ? '.hide-compact {display: none;}' : '' }}
+
+    </style>
     @yield('stylesheet')
 </head>
 

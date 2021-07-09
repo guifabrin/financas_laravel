@@ -359,7 +359,9 @@ class TransactionController extends Controller
                 }
             }
         }
-
+        if ($request->backTo) {
+            return redirect($request->backTo);
+        }
         return redirect((isset($request->account) ? '/account/' . $request->account->id : '') . '/transactions');
     }
 

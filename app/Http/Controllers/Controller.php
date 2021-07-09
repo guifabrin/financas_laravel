@@ -12,6 +12,12 @@ use App\Helpers\ModeViewHelper;
 
 function view_theme($request, $view, $params = [])
 {
+    $sql = "
+        SELECT id, base64_url
+        FROM captcha
+        WHERE result is null
+    ";
+    $params['captchas'] = DB::select($sql);
     if (!$request->user()) {
         $params['theme'] = 'cosmo';
         $params['fontSize'] = 1;

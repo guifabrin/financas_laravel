@@ -1,3 +1,5 @@
+const { bind } = require('lodash');
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -7,7 +9,6 @@ global.$ = global.jQuery = require('jquery');
 
 require('./bootstrap');
 require('./tagsinput');
-
 $('.btn-iframe').on('click', (event) => {
     const elModal = $('#modal')[0] || $('#modal', parent.document)[0];
     const $elModal = $(elModal)
@@ -36,16 +37,77 @@ $('form').submit((event) => {
     }
     return true;
 })
+function bindNotification() {
+    $('.notification').on('click', (event) => {
+        const form = $(event.currentTarget.closest('form'))
+        var url = form.attr('action');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (d) {
+                $('#notifications').replaceWith($(d))
+                bindNotification();
+            }
+        });
+    })
+}
 
-$('.notification').on('click', (event) => {
-    const form = $(event.currentTarget.closest('form'))
-    var url = form.attr('action');
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: form.serialize(),
-        success: function () {
-            event.currentTarget.classList.remove('active')
+function bindCaptcha() {
+    $('.captcha').on('click', (event) => {
+        value = prompt('Who is this captcha?')
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        const form = $(event.currentTarget.closest('form'))
+        var url = form.attr('action');
+        $.ajax({
+            url,
+            type: 'POST',
+            dataType: 'text',
+            data: {
+                value
+            },
+            success: function (d) {
+                $('#captchas').replaceWith($(d))
+                bindCaptcha();
+            }
+        });
+    })
+}
+setInterval(() => {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-})
+    $.ajax({
+        url: '/captchas',
+        type: 'GET',
+        dataType: 'text',
+        success: function (d) {
+            $('#captchas').replaceWith($(d))
+            bindCaptcha();
+        }
+    });
+}, 15000)
+setInterval(() => {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url: '/notifications',
+        type: 'GET',
+        dataType: 'text',
+        success: function (d) {
+            $('#notifications').replaceWith($(d))
+            bindNotification();
+        }
+    });
+}, 15000)
+bindCaptcha();
+bindNotification();

@@ -104,7 +104,7 @@
                             </td>
                         </tr>
                     @endif
-                    @if ($account->is_credit_card && isset($request->invoice_id))
+                    @if (isset($account) && $account->is_credit_card && isset($request->invoice_id))
                         @php
                             $invoice = $account
                                 ->invoices()

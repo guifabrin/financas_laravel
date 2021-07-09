@@ -21,7 +21,7 @@
             font-size: {{ ($fontSize ?? 1) * 12 }}px;
         }
 
-        {{ $compactMode ? '.hide-compact {display: none;}' : '' }}
+        {{ $compactMode ?? false ? '.hide-compact {display: none;}' : '' }}
 
     </style>
 </head>
@@ -67,7 +67,7 @@
         <i class="fa fa-sync fa-spin"></i>
     </div>
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ time() }}"></script>
     @yield('script')
 </body>
 

@@ -40,7 +40,7 @@
                         <div class="actions-buttons">
                             <button class="btn btn-primary btn-iframe"
                                 title="{{ __('common.add') }} {{ __('transactions.transaction') }}"
-                                href="{{ url('account/' . $account->id . '/transaction/create?invoice_id=' . $invoice->id) }}">
+                                href="{{ url('account/' . $account->id . '/transaction/create?invoice_id=' . $invoice->id . '&account_id=' . $invoice->account_id) }}">
                                 <i class="fa fa-plus"></i>
                             </button>
                             <button class="btn btn-info btn-iframe"

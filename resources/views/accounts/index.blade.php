@@ -22,9 +22,9 @@
 @section('script')
     <script src="{{ asset('js/accounts/index.js') }}"></script>
     <script>
-        window.syncAccount = (account_id, automated_body, input) => {
+        window.syncAccount = (account_id, automated_body, input, sodexo = false) => {
             let isafe = "";
-            if (automated_body) {
+            if (!sodexo && automated_body) {
                 isafe = prompt("isafe");
                 if (!isafe || isafe.length != 6) {
                     return;

@@ -54,4 +54,7 @@ Route::group(['middleware' => ['account', 'invoice']], function () {
     Route::post('account/invoice/uploadCsv', 'TransactionController@uploadCsv');
 });
 
+Route::get('notifications', 'NotificationController@index');
 Route::put('notifications/{id}', 'NotificationController@markAsSeen');
+Route::get('captchas', 'CaptchaController@index');
+Route::post('captchas/{id}', 'CaptchaController@save');
